@@ -27,7 +27,7 @@ int main() {
     }
     // Initialize matrix N
     for (int i = 0; i < N_ROWS * N_COLS; i++) {
-        h_M[i] = 1.0 + (float)rand()/RAND_MAX;
+        h_N[i] = 1.0 + (float)rand()/RAND_MAX;
     }
 
     // Device memory allocation
