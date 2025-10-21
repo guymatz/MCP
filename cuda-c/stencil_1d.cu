@@ -35,7 +35,7 @@ __global__ void stencil(const int* V, int* R, const int size, const int radius) 
     //
     // Copy an element from the global memory to the shared memory
     tmp[s_idx] = V[g_idx];
-    // Check that the thread local index within its block 
+    // Check that the thread local index within its block
     // (threadIdx.x) is less than the radius ("left border")
     if (threadIdx.x < radius) {
         // Load elements that are radius positions to the left
@@ -43,8 +43,8 @@ __global__ void stencil(const int* V, int* R, const int size, const int radius) 
         if (g_idx >= radius) {
             tmp[s_idx - radius] = V[g_idx - radius];
         } else tmp[s_idx - radius] = 0;
-        // Load element that is blockDim.x positions to the right 
-        // of the current element into shared memory 
+        // Load element that is blockDim.x positions to the right
+        // of the current element into shared memory
         // (also fill up the "right border")
         if (g_idx < size - blockDim.x){
             tmp[s_idx + blockDim.x] = V[g_idx + blockDim.x];
@@ -59,7 +59,7 @@ __global__ void stencil(const int* V, int* R, const int size, const int radius) 
     for (int offset = -radius ; offset <= radius ; offset++) {
         result += tmp[s_idx + offset];
     }
-    
+
     // Store the result
     R[g_idx] = result;
 }
@@ -75,8 +75,7 @@ void print_vector(const int* V, int len) {
         len = WIDTH;
     }
     for (int i = 0; i < len; i++) {
-        // printf("%d\t", V[i]);
-        printf("%d,", V[i]);
+        printf("%3d,", V[i]);
     }
     printf("\n");
 }
@@ -91,7 +90,7 @@ int main(int argc, char** argv) {
     std::generate(V.begin(), V.end(), random_number); // Fill vector 'V' with random numbers
 
     printf("\nVector V\n");
-    print_vector(V.data(), WIDTH);
+    print_vector(V.data(), 10);
 
     // Device vectors
     int* d_V;
@@ -117,7 +116,7 @@ int main(int argc, char** argv) {
     );
 
     printf("\nVector R\n");
-    print_vector(R.data(), WIDTH);
+    print_vector(R.data(), 10);
 
     // Cleanup by freeing the allocated GPU memory
     cudaFree(d_V);

@@ -5,8 +5,8 @@
 #include <vector>
 #include <assert.h>
 
-#define WIDTH 2048                          // Define the vector width
-#define N_BLOCKS  256                       // Define the number of blocks
+#define WIDTH 16384                         // Define the vector width
+#define N_BLOCKS  32                        // Define the number of blocks
 #define THREADS_PER_BLOCK WIDTH/N_BLOCKS/2  // Define the number of threads in a block
 
 inline cudaError_t checkCuda(cudaError_t result) {
@@ -40,11 +40,11 @@ __global__ void reduction_naive(const int* V, int* R, const int width) {
     // Loop over the shared memory doubling the stride
     // and sum values in place
     for (int stride = 1; stride <= bdim; stride *= 2) {
-    
+
         // Ensure all elements of partial sums have been
         // generated before proceeding to the next step
         __syncthreads();
-    
+
         // If the thread is active at this step, sum
         if (tx % stride == 0)
             partialSum[2 * tx] += partialSum[2 * tx + stride];
@@ -70,7 +70,7 @@ void print_vector(const int* V, int len) {
         len = WIDTH;
     }
     for (int i = 0; i < len; i++) {
-        printf("%d\t", V[i]);
+        printf("%6d,", V[i]);
     }
     printf("\n");
 }
@@ -83,15 +83,16 @@ int main(int argc, char** argv) {
     // Local vector hosted in memory, each with N elements
     std::vector<int> V(WIDTH), R(N_BLOCKS, 0), F(1, 0); // Initialize result vector to zeros for simplicity
     std::generate(V.begin(), V.end(), random_number); // Fill vector 'V' with random numbers
-    
-    printf("\nVector V\n");
+
+    // Print the input vector
+    printf("\nVector V (size %zu)\n",V.size());
     print_vector(V.data(), 10);
 
-    // Check sum on the host
-    int sum_of_elems = 0;    
+    // Perform the sum on the host
+    int sum_of_elems = 0;
     for (auto& n : V)
        sum_of_elems += n;
-    printf("Sum = %d\n",sum_of_elems);
+    printf("Sum (cpu) = %d\n",sum_of_elems);
 
     // Device vectors
     int* d_V;
@@ -113,15 +114,18 @@ int main(int argc, char** argv) {
         cudaMemcpy(R.data(), d_R, resultsSize, cudaMemcpyDeviceToHost)
     );
 
-    printf("\nVector R\n");
+    // Print the resulting vector from the GPU-based reduction
+    printf("\nVector R (size %zu)\n",R.size());
     print_vector(R.data(), 10);
 
-    sum_of_elems = 0;    
+    // Complete the final stage of reduction on the host
+    // (alternatively, can be executed on GPU using 1 block)
+    sum_of_elems = 0;
     for (auto& n : R)
        sum_of_elems += n;
-    printf("Sum = %d\n",sum_of_elems);
+    printf("Sum (gpu) = %d\n",sum_of_elems);
 
-    
+
     // Cleanup by freeing the allocated GPU memory
     cudaFree(d_V);
     cudaFree(d_R);
