@@ -31,11 +31,15 @@ float random_number() {
 
 // Function to printout the matrix
 void print_matrix(const float* M, int rows, int cols) {
+    if (ROWS < rows)
+        rows = ROWS;
+    if (COLS < cols)
+        cols = COLS;
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
-            printf("%.2f", M[i * rows + j]);
-            if (j < cols - 1) printf("\t");
-        }
+            printf("%8.2f", M[i * COLS + j]);
+
+        }   
         printf("\n");
     }
 }
@@ -50,7 +54,7 @@ int main(int argc, char** argv) {
     std::vector<float> M(ROWS * COLS), P(ROWS * COLS);
     std::generate(M.begin(), M.end(), random_number);  // Fill vector 'M' with random numbers
 
-    printf("Matrix M\n");
+    printf("\nMatrix M\n");
     print_matrix(M.data(), 10, 10);
 
     // Device matrices
@@ -74,7 +78,7 @@ int main(int argc, char** argv) {
     // Copy the result vector from the GPU back to the CPU
     cudaMemcpy(P.data(), d_P, matrixSize, cudaMemcpyDeviceToHost);
 
-    printf("Matrix P\n");
+    printf("\nMatrix P\n");
     print_matrix(P.data(), 10, 10);
 
     // Cleanup by freeing the allocated GPU memory
