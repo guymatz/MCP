@@ -27,9 +27,9 @@ float random_number() {
 
 // Function to printout the matrix
 void print_matrix(const float* M, int rows, int cols) {
-    if (ROWS < rows) 
+    if (ROWS < rows)
         rows = ROWS;
-    if (COLS < cols) 
+    if (COLS < cols)
         cols = COLS;
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {

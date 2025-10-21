@@ -38,8 +38,7 @@ void print_matrix(const float* M, int rows, int cols) {
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
             printf("%8.2f", M[i * COLS + j]);
-
-        }   
+        }
         printf("\n");
     }
 }

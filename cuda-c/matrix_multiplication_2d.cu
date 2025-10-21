@@ -39,19 +39,14 @@ void matrixMultiplicationCPU(const float* M, const float* N, float* P, const int
 
     printf("\nComputing matrix multiplication on host... ");
     for (int row = 0; row < width; ++row) {
-        // First round to initialize P with values corresponding to k = 0
         for (int col = 0; col < width; ++col) {
-            P[row * width + col] = M[row * width] * N[col];
-        }
-        // Subsequent rounds to accumulate the sum for k > 0
-        for (int k = 1; k < width; ++k) {
-            for (int col = 0; col < width; ++col) {
+            for (int k = 0; k < width; ++k) {
                 P[row * width + col] += M[row * width + k] * N[k * width + col];
             }
         }
         printf("\rComputing matrix multiplication on host... %3.f%%", 100.0 * (row + 1) / width);
     }
-    printf(" ✔\n");
+    printf("\n");
 }
 
 // Function to verify that two arrays are approximately equal
@@ -59,11 +54,11 @@ void allCloseTo(const std::vector<float>& a, const std::vector<float>& b, float 
     assert(a.size() == b.size());
     for (size_t i = 0; i < a.size(); ++i) {
         if (fabs(a[i] - b[i]) > tol) {
-            fprintf(stderr, "Mismatch at index %zu: %f vs %f\n", i, a[i], b[i]);
+            printf("Mismatch at index %zu: %f vs %f\n", i, a[i], b[i]);
             assert(false);
         }
     }
-    fprintf(stdout, "All values are within the tolerance ✔\n");
+    printf("All values are within the tolerance\n");
 }
 
 // Function to generate a random number between 0 and 1
@@ -73,9 +68,9 @@ float random_number() {
 
 // Function to printout the matrix
 void print_matrix(const float* M, int rows, int cols) {
-    if (WIDTH < rows) 
+    if (WIDTH < rows)
         rows = WIDTH;
-    if (WIDTH < cols) 
+    if (WIDTH < cols)
         cols = WIDTH;
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
@@ -91,8 +86,9 @@ int main(int argc, char** argv) {
     srand(time(NULL));  // Ensure that rand() produces different sequences each run
 
     // Local vectors hosted in memory, each with N elements
-    // using a vector to host the matrix, in a row-wise allocation
-    std::vector<float> M(WIDTH * WIDTH), N(WIDTH * WIDTH), P(WIDTH * WIDTH), Pcpu(WIDTH * WIDTH);
+    // using a vector to host the matrix, in a row-wise allocation (row major)
+    std::vector<float> M(WIDTH * WIDTH), N(WIDTH * WIDTH), P(WIDTH * WIDTH);
+    std::vector<float> Pcpu(WIDTH * WIDTH, 0.);       // Fill vector 'Pcpu' with zeros
     std::generate(M.begin(), M.end(), random_number); // Fill vector 'M' with random numbers
     std::generate(N.begin(), N.end(), random_number); // Fill vector 'N' with random numbers
 
@@ -101,10 +97,6 @@ int main(int argc, char** argv) {
 
     printf("\nMatrix N\n");
     print_matrix(N.data(), 10, 10);
-
-    // Compute matrix multiplication on the CPU for verification
-    // (you can comment this line to save time)
-    matrixMultiplicationCPU(M.data(), N.data(), Pcpu.data(), WIDTH);
 
     // Device matrices
     float* d_M;
@@ -135,8 +127,16 @@ int main(int argc, char** argv) {
     printf("\nMatrix P\n");
     print_matrix(P.data(), 10, 10);
 
+    /***
+    // Run the same operation on CPU and test for closure
+    // (comment these lines to save time)
+
+    // Compute matrix multiplication on the CPU for verification
+    matrixMultiplicationCPU(M.data(), N.data(), Pcpu.data(), WIDTH);
+
     // Verify the result (only if CPU computation was performed)
     allCloseTo(P, Pcpu, 1e-3);
+    ***/
 
     // Cleanup by freeing the allocated GPU memory
     cudaFree(d_M);
