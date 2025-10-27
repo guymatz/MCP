@@ -1,9 +1,10 @@
 #include <stdio.h>
 
-#define M_ROWS 4000      // Number of rows in the matrix M
-#define M_COLS 6000      // Number of cols in the matrix M
+// The number of elements is reduced to avoid running out of memory 
+#define M_ROWS 2000      // Number of rows in the matrix M
+#define M_COLS 3000      // Number of cols in the matrix M
 #define N_ROWS (M_COLS)  // Number of rows in the matrix N (matching the number of columns of matrix)
-#define N_COLS 5000      // Number of cols in the matrix N
+#define N_COLS 2500      // Number of cols in the matrix N
 
 __global__ void matrixAdd(float* M, float* N, float* P, int rows_M, int cols_M, int rows_N, int cols_N) {
 
