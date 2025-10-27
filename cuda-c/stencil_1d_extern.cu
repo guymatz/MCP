@@ -21,8 +21,8 @@ inline cudaError_t checkCuda(cudaError_t result) {
 __global__ void stencil(const int* V, int* R, const int size, const int radius) {
 
     // Declare shared array of elements for the block
-    // accounting for the two side radius
-    __shared__ int tmp[THREADS_PER_BLOCK + 2 * RADIUS];
+    // Declaration as extern allows to instantiade the amount dinamically at runtime
+    extern __shared__ int tmp[];
 
     // Calculate the global thread ID of the active kernel
     int g_idx = blockIdx.x * blockDim.x + threadIdx.x;
@@ -108,7 +108,8 @@ int main(int argc, char** argv) {
     int N_tpb = THREADS_PER_BLOCK;
 
     // Launch CUDA kernel
-    stencil<<<N_b, N_tpb>>>(d_V, d_R, WIDTH, RADIUS);
+    // Extess at launch the size of the shared memory to allocate
+    stencil<<<N_b, N_tpb, (THREADS_PER_BLOCK+2*RADIUS)*sizeof(int) >>>(d_V, d_R, WIDTH, RADIUS);
 
     // Copy the result vector from the GPU back to the CPU
     checkCuda(
@@ -124,4 +125,5 @@ int main(int argc, char** argv) {
 
     return 0;
 }
+
 
