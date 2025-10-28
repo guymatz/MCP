@@ -34,7 +34,12 @@ __global__ void stencil(const int* V, int* R, const int size, const int radius) 
     // Fill the shared memory
     //
     // Copy an element from the global memory to the shared memory
-    tmp[s_idx] = V[g_idx];
+    if (g_idx < size) {
+        tmp[s_idx] = V[g_idx];
+    } else {
+        tmp[s_idx] = 0;
+    }
+
     // Check that the thread local index within its block
     // (threadIdx.x) is less than the radius ("left border")
     if (threadIdx.x < radius) {
@@ -42,13 +47,14 @@ __global__ void stencil(const int* V, int* R, const int size, const int radius) 
         // of the current element in the global memory vector V
         if (g_idx >= radius) {
             tmp[s_idx - radius] = V[g_idx - radius];
-        }
+        } else tmp[s_idx - radius] = 0;
+
         // Load element that is blockDim.x positions to the right
         // of the current element into shared memory
         // (also fill up the "right border")
         if (g_idx < size - blockDim.x){
             tmp[s_idx + blockDim.x] = V[g_idx + blockDim.x];
-        }
+        } else tmp[s_idx + blockDim.x] = 0;
     }
 
     // Synchronize (ensure all the data is available)
@@ -59,9 +65,11 @@ __global__ void stencil(const int* V, int* R, const int size, const int radius) 
     for (int offset = -radius ; offset <= radius ; offset++) {
         result += tmp[s_idx + offset];
     }
-    
+
     // Store the result
-    R[g_idx] = result;
+    if (g_idx < size) {
+        R[g_idx] = result;
+    }
 }
 
 // Function to generate a random number between 0 and 10
