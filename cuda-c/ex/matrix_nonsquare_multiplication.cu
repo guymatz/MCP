@@ -6,7 +6,7 @@
 #define N_ROWS (M_COLS)  // Number of rows in the matrix N (matching the number of columns of matrix)
 #define N_COLS 2500      // Number of cols in the matrix N
 
-__global__ void matrixAdd(float* M, float* N, float* P, int rows_M, int cols_M, int rows_N, int cols_N) {
+__global__ void matrixMultiplication(float* M, float* N, float* P, int rows_M, int cols_M, int rows_N, int cols_N) {
 
     // ...
 }
