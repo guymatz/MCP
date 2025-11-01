@@ -6,8 +6,12 @@
 #define N_ROWS (M_COLS)  // Number of rows in the matrix N (matching the number of columns of matrix)
 #define N_COLS 2500	  // Number of cols in the matrix N
 
+<<<<<<< HEAD
 __global__ void matrixAdd(float* M, float* N, float* P, int rows_M, int cols_M, int rows_N, int cols_N) {
 			// d_M,	  d_N,	 d_P,	   M_ROWS,	 M_COLS,	 N_ROWS,	 N_COLS);
+=======
+__global__ void matrixMultiplication(float* M, float* N, float* P, int rows_M, int cols_M, int rows_N, int cols_N) {
+>>>>>>> upstream/2025
 
 	int idx = blockIdx.x * blockDim.x + threadIdx.x;
 	if (idx >= M_ROWS * M_COLS ) {
