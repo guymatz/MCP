@@ -25,7 +25,7 @@ __global__ void matrixMultiplication(float *A_T, float *B, float *C, int width) 
     if (row < width && col < width) {
         float sum = 0.0f;
         for (int k = 0; k < width; k++) {
-            sum += A_T[row * width + k] * B[k * width + col];
+            sum += A_T[k * width + row] * B[k * width + col];
         }
         C[row * width + col] = sum;
     }
