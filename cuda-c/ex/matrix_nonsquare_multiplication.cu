@@ -34,6 +34,25 @@ __global__ void matrixMultiplication(float* M, float* N, float* P, int rows_M, i
 
 int main() {
 
+	int i;
+	cudaGetDevice(&i);
+	struct cudaDeviceProp prop;
+	cudaGetDeviceProperties(&prop, i);
+	printf("Device Number: %d\n", i);
+    printf("  Device name: %s\n", prop.name);
+	for (auto p : prop.maxGridSize) {
+		printf("  ------- Max Grid Size : %i\n", p);
+	}
+    //printf("  Max Blocks per SMP: %d\n", prop.maxBlocksPerMultiProcessor);
+	for (auto p : prop.maxThreadsDim) {
+		printf("  ------- Max Threads Dim : %i\n", p);
+	}
+    printf("  Max Threads Per Block: %d\n", prop.maxThreadsPerBlock);
+    printf("  Max Threads Per MultiProcessor: %d\n", prop.maxThreadsPerMultiProcessor);
+    printf("  Warp-size: %d\n", prop.warpSize);
+    printf("  Concurrent kernels: %s\n", prop.concurrentKernels ? "yes" : "no");
+    printf("  Concurrent computation/communication: %s\n\n",prop.deviceOverlap ? "yes" : "no");
+
     // Size in bytes for the ROWS x COLS matrix
     printf("Size in bytes for the ROWS x COLS matrix\n");
     int size_M = M_ROWS * M_COLS * sizeof(float);  
@@ -76,7 +95,9 @@ int main() {
     
     // Define block and grid sizes
     printf("Define block and grid sizes\n");
-	dim3 N_threads(16, 16);
+    int  maxThreadsPerBlock = prop.maxThreadsPerBlock;
+    int  warpSize = prop.warpSize;
+	dim3 N_threads(maxThreadsPerBlock / warpSize, maxThreadsPerBlock / warpSize);
 	int N_blocks_x = ceil( (float)N_COLS / N_threads.x);
 	int N_blocks_y = ceil( (float)M_ROWS / N_threads.y);
 	printf("Dim of P: %i * %i = %i\n", M_ROWS, N_COLS, M_ROWS * N_COLS);
