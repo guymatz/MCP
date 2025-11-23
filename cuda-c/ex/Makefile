@@ -6,7 +6,7 @@ NVCCFLAGS ?= -g -Werror all-warnings
 LDFLAGS ?=
 
 SRCS := $(wildcard *.cu)
-EXES := $(SRCS:.cu=)
+EXES := $(SRCS:.cu=.x)
 
 .PHONY: all clean help
 all: $(EXES)
@@ -15,7 +15,7 @@ ifeq ($(strip $(EXES)),)
 endif
 
 # Pattern rule: build executable (no extension) from .cu source
-%: %.cu
+%.x: %.cu
 	$(NVCC) $(NVCCFLAGS) $< -o $@ $(LDFLAGS)
 
 clean:
