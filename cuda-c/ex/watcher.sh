@@ -9,9 +9,11 @@ while true; do
 	## ./ CREATE matrix_addition.cu
 	inotifywait -q -m . -e close_write | while read -r dir action filename; do
 		if [[ "$filename" =~ .cu$ ]]; then
-			bin=${filename%%.*}
+            clear
+            echo "*********** $filename"
+			bin=${filename%%.*}.x
 			echo $dir $action $filename $bin
-			make && ./$bin
+			make $bin && ./$bin
 		fi
 	done
 done
