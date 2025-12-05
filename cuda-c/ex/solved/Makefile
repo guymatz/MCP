@@ -2,6 +2,7 @@
 
 NVCC ?= nvcc
 #NVCCFLAGS ?= -O2 -std=c++14
+NVCCFLAGS ?= -g -Werror all-warnings
 LDFLAGS ?=
 
 SRCS := $(wildcard *.cu)
@@ -14,7 +15,7 @@ ifeq ($(strip $(EXES)),)
 endif
 
 # Pattern rule: build executable (no extension) from .cu source
-%.x: %.cu
+%: %.cu
 	$(NVCC) $(NVCCFLAGS) $< -o $@ $(LDFLAGS)
 
 clean:

@@ -24,6 +24,13 @@ int main() {
     // Print the device properties
     printf("Device Number: %d\n", i);
     printf("  Device name: %s\n", prop.name);
+    printf("  maxThreadsPerBlock: %i\n", prop.maxThreadsPerBlock);
+
+    printf("  maxThreadsDim: \n");
+    for (int j = 0; j < 3; j++) {
+        printf("\t%i: %i\n", j, prop.maxThreadsDim[j]);
+    }
+    printf("  warpSize: %i\n", prop.warpSize);
     printf("  n SMPs: %d\n", prop.multiProcessorCount);
     printf("  n SPs: %d\n", prop.multiProcessorCount*128);
     printf("  Clock rate (MHz): %.1f\n", prop.clockRate/1024.);

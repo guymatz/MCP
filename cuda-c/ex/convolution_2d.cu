@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #define KERNEL_SIZE 3  // Size of the square kernel (KERNEL_SIZE x KERNEL_SIZE)
 #define THREADS_PER_BLOCK_X 16 // Number of threads per block in X
@@ -83,16 +84,17 @@ void write_pgm(const char *filename, int *image, int width, int height, int max_
 }
 
 int main() {
-    int width, height, max_val;
+    int width, height, max_val, area;
 
     // Read the PGM image
     int *host_input = read_pgm("ny_gray.pgm", &width, &height, &max_val);
+	area = width * height;
     if (host_input == NULL) {
         return 1;  // Error reading the file
     }
 
     // Allocate memory for the output image on the host
-    int *host_output = (int *)malloc(width * height * sizeof(int));
+    int *host_output = (int *)malloc(area * sizeof(int));
     if (host_output == NULL) {
         printf("Error: Could not allocate memory for output image.\n");
         free(host_input);
@@ -107,18 +109,33 @@ int main() {
     };
 
     // Allocate memory for the image and kernel on the GPU
-
+	int *d_output;
+	int *d_input;
+	cudaMalloc((void **)&d_output, area*sizeof(int));
+	cudaMalloc((void **)&d_input, area*sizeof(int));
+	
     // Copy the input image and the kernel to the GPU
+	cudaMemcpy(d_input, host_input, area*sizeof(int), cudaMemcpyHostToDevice);
+	cudaMemcpy(d_output, host_output, area*sizeof(int), cudaMemcpyHostToDevice);
+	
 
     // Define the block and grid dimensions
-
+	dim3 N_threads(THREADS_PER_BLOCK_X,THREADS_PER_BLOCK_Y);
+	dim3 N_blocks(ceil( (float)area / THREADS_PER_BLOCK_X),ceil( (float)area / THREADS_PER_BLOCK_Y));
     // Launch the CUDA kernel to apply the convolution
+	convolve2d<<<N_blocks, N_threads>>>(d_input, d_output, width, height, max_val, kernel);
 
     // Copy the output image back to the host
+	cudaMemcpy(host_output, d_output, area*sizeof(int), cudaMemcpyDeviceToHost);
+	
 
     // Write the image to a new PGM file
 
     // Free the memory on the host and the GPU
+	cudaFree(d_input);
+	cudaFree(d_output);
+	free(host_input);
+	free(host_output);
 
     return 0;
 }

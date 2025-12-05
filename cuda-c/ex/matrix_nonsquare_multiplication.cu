@@ -76,8 +76,8 @@ int main() {
         h_N[i] = 1.0 + (float)rand()/RAND_MAX;
     }
 
-	print_matrix(h_M, M_ROWS);
-	print_matrix(h_N, N_COLS);
+	print_fmatrix(h_M, M_ROWS);
+	print_fmatrix(h_N, N_COLS);
 
     // Device memory allocation
     printf("Device memory allocation\n");
@@ -92,7 +92,7 @@ int main() {
     printf("Copy matrices M and N from host to device\n");
     cudaMemcpy(d_M, h_M, size_M, cudaMemcpyHostToDevice);
     cudaMemcpy(d_N, h_N, size_N, cudaMemcpyHostToDevice);
-    
+
     // Define block and grid sizes
     printf("Define block and grid sizes\n");
     int  maxThreadsPerBlock = prop.maxThreadsPerBlock;
@@ -116,7 +116,7 @@ int main() {
 	
     // Print part of the result matrix P for verification
     printf("Print part of the result matrix P for verification\n");
-	print_matrix(h_P, M_ROWS);
+	print_fmatrix(h_P, M_ROWS);
 
     // Free device memory
     printf("Free device memory\n");
