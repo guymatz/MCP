@@ -5,13 +5,18 @@
 # ./ MODIFY matrix_addition.cu
 # ./ MODIFY .matrix_addition.cu.swp
 
+if [[ "$(uname -a)" =~ Darwin ]]; then
+	cmd="fswatch . -1"
+else
+	cmd="inotifywait -q -m . -e close_write"
+fi
+
 while true; do
-	## ./ CREATE matrix_addition.cu
-	inotifywait -q -m . -e close_write | while read -r dir action filename; do
-		if [[ "$filename" =~ .cpp$ ]]; then
-            clear
-            echo "*********** $filename"
-            g++ batcher-odd-even-serial.cpp -o batcher-odd-even-serial.x && ./batcher-odd-even-serial.x 
-		fi
+	$cmd | while read filename; do
+		clear
+		date
+		echo "*********** $filename"
+		make $(basename ${filename%%.*}).x && ./$(basename ${filename%%.*}).x
 	done
+	sleep 1
 done

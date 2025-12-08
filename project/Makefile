@@ -4,10 +4,13 @@ NVCC ?= nvcc
 GCC ?= g++
 #NVCCFLAGS ?= -O2 -std=c++14
 NVCCFLAGS ?= -g -Werror all-warnings
+GCCFLAGS ?= -g -Wall
 LDFLAGS ?=
 
-SRCS := $(wildcard *.cu) $(wildcard *.cpp)
-EXES := $(SRCS:.cu=.x) $(SRCS:.cpp=.x)
+SRCS := $(wildcard *.cu)
+EXES := $(SRCS:.cu=.x)
+SRCS := $(SRCS) $(wildcard *.cpp)
+EXES := $(EXES) $(SRCS:.cpp=.x)
 $(info $(SRCS))
 $(info $(EXES))
 
