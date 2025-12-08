@@ -30,7 +30,7 @@ void populate_vector(int V[], int n) {
     //  if file exists, populate array with the file,
     //  otherwise create file and array at the same file
     string s; // will store ints read from the file
-    string fname = "randos-" + std::to_string(n) + ".dat";
+    string fname = "dat/randos-" + std::to_string(n) + ".dat";
     ifstream f(fname);
     if (f.is_open()) {
         //cout << "Using " << fname << " since it already exists . . ." << std::endl;

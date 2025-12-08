@@ -16,7 +16,7 @@ using namespace std;
 void populate_vector(int V[], int n) {
     //cout << "In pop vec: " << n << std::endl;;
     string s; // will store ints read from the file
-    string fname = "randos-" + std::to_string(n) + ".dat";
+    string fname = "dat/randos-" + std::to_string(n) + ".dat";
     ifstream f(fname);
     //cout << "Checking file: " << f << std::endl;
     if (f.is_open()) {
