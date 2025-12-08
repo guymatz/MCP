@@ -20,7 +20,7 @@ double get_elapsed_time(struct timespec start, struct timespec end) {
 }
 
 // Function to generate a random number
-void populate_vector(int V[], int n) {
+void populate_vector(size_t V[], size_t n) {
     //cout << "In pop vec: " << n << std::endl;;
     string s; // will store ints read from the file
     string fname = "dat/randos-" + std::to_string(n) + ".dat";

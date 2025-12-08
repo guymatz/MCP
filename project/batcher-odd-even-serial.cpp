@@ -18,15 +18,15 @@ int main(int argc, char *argv[]) {
     int N = 4;
     if (argc == 2)
         N = stoi(argv[1]);
-    int n = pow(2, N);
+    size_t n = pow(2, N);
     //printf("Working with a list of 2^%i (%i)\n", N, n);
     //int ij, ijrk;
     // for ranges of loops
-    int rp, rk;
-    int Vnums[n];
+    size_t rp, rk;
+    size_t Vnums[n];
     populate_vector(Vnums, n);
 
-    for (int i = 0; i < n; i++) {
+    for (size_t i = 0; i < n; i++) {
         //cout << "BEFORE: " << Vnums[i] << std::endl;
         //cout << i << " " << Vnums[i] << std::endl;
     }
@@ -35,16 +35,16 @@ int main(int argc, char *argv[]) {
     clock_gettime(CLOCK_MONOTONIC, &start_time);
 
     // See https://en.wikipedia.org/wiki/Batcher_odd%E2%80%93even_mergesort
-    for (int p = 0; p < floor(log2(n)); p++) {
+    for (size_t p = 0; p < floor(log2(n)); p++) {
         rp = pow(2, p);
-        for (int k = 0; k < floor(log2(n)); k++) {
+        for (size_t k = 0; k < floor(log2(n)); k++) {
             rk = (int)(rp / pow(2, k));
             if (rk < 1)
                 continue;
             //cout << rk << " " << k << " " << p << std::endl;
             //continue; 
-            for (int j = (rk % rp); j <= n-1-rk; j=j+2*rk) {   //  is this right?!
-                for (int i = 0; i <= fmin(rk-1, n-j-rk-1); i++) {
+            for (size_t j = (rk % rp); j <= n-1-rk; j=j+2*rk) {   //  is this right?!
+                for (size_t i = 0; i <= fmin(rk-1, n-j-rk-1); i++) {
                     //cout << " " << rp << " " << rk << " " << i << " " << j << " " << std::endl;
                     if (floor((i+j) / (rp*2)) == floor((i+j+rk) / (rp*2))) {
                         if ( Vnums[i+j] > Vnums[i+j+rk] ) {
@@ -63,9 +63,11 @@ int main(int argc, char *argv[]) {
     clock_gettime(CLOCK_MONOTONIC, &end_time);
 
     //cout << "AFTER sort . . .\n";
+    /*
     for (int i = 0; i < n; i++) {
         cout << pp(Vnums[i]) << std::endl;
     }
+    */
     printf("Batcher O/E Execution time: %.6f seconds\n", get_elapsed_time(start_time, end_time));
 
 }

@@ -13,12 +13,12 @@
 
 using namespace std;
 
-void bitonicMerge(int V[], int low, int count, int direction) {
-    int k;
+void bitonicMerge(size_t V[], size_t low, size_t count, int direction) {
+    size_t k;
     if (count <= 1)
         return;
     k = count / 2;
-    for (int i = low; i <= low + k - 1; i++) {
+    for (size_t i = low; i <= low + k - 1; i++) {
         if ((direction == 1 && V[i] > V[i + k]) || (direction == 0 && V[i] < V[i + k]) ) {
             //cout << "Swapping " << V[i] << " " << V[i+k] << std::endl;
             swap(V[i], V[i+k]);
@@ -28,9 +28,9 @@ void bitonicMerge(int V[], int low, int count, int direction) {
     bitonicMerge(V, low+k, k, direction);
 }
 
-void bitonicSort(int V[], int low, int count, int direction) {
+void bitonicSort(size_t V[], size_t low, size_t count, int direction) {
     
-    int k;
+    size_t k;
     if (count <= 1)
         return;
     k = count / 2;
@@ -46,14 +46,16 @@ int main(int argc, char *argv[]) {
     int N = 4;
     if (argc == 2)
         N = stoi(argv[1]);
-    int n = pow(2, N);
-    int Vnums[n];
+    size_t n = pow(2, N);
+    size_t Vnums[n];
     populate_vector(Vnums, n);
 
     //cout << "n: " << n << ", N: " << N << std::endl;
-    for (int i = 0; i < n; i++) {
-        //cout << "before: " << Vnums[i] << std::endl;
+    /*
+    for (size_t i = 0; i < n; i++) {
+        cout << "before: " << Vnums[i] << std::endl;
     }
+    */
 
     struct timespec start_time, end_time;
     clock_gettime(CLOCK_MONOTONIC, &start_time);
@@ -61,8 +63,10 @@ int main(int argc, char *argv[]) {
     clock_gettime(CLOCK_MONOTONIC, &end_time);
 
     //cout << "AFTER sort . . .\n";
+    /*
     for (int i = 0; i < n; i++) {
         cout << pp(Vnums[i]) << std::endl;
     }
+    */
     printf("Bitonic Execution time: %.6f seconds\n", get_elapsed_time(start_time, end_time));
 }
