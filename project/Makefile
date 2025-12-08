@@ -4,8 +4,8 @@ NVCC ?= nvcc
 GCC ?= g++
 #NVCCFLAGS ?= -O2 -std=c++14
 NVCCFLAGS ?= -g -Werror all-warnings
-GCCFLAGS ?= -g -Wall
-LDFLAGS ?=
+GCCFLAGS ?= -g -Wall -std=c++17
+LDFLAGS ?= -lbenchmark
 
 SRCS := $(wildcard *.cu)
 EXES := $(SRCS:.cu=.x)

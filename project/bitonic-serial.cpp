@@ -1,48 +1,17 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <algorithm>
-#include <vector>
-#include <assert.h>
+//#include <stdio.h>
+//#include <stdlib.h>
+//#include <time.h>
+//#include <algorithm>
+//#include <vector>
+//#include <assert.h>
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <cmath>
+//#include <benchmark/benchmark.h>
+#include "utils.hpp"
 
 using namespace std;
-//  Number of elements in our list
-
-// Function to generate a random number
-void populate_vector(int V[], int n) {
-    //cout << "In pop vec: " << n << std::endl;;
-    string s; // will store ints read from the file
-    string fname = "dat/randos-" + std::to_string(n) + ".dat";
-    ifstream f(fname);
-    //cout << "Checking file: " << f << std::endl;
-    if (f.is_open()) {
-        //cout << "Using file - " << fname << " - since it already exists . . ." << std::endl;
-        for (int i = 0; i < n; i++) {
-            //cout << i << " ";
-            getline(f, s);
-            V[i] = stoi(s);
-        }
-    }
-    else {
-        srand(1);
-        //cout << "Using new file " << fname << std::endl;
-        size_t rando;
-        ofstream f(fname);
-        //cout << "Creating File . . .\n";
-        for (int i = 0; i < n; i++) {
-            rando = std::rand();
-            V[i] = rando;
-            f << rando << std::endl;
-        }
-        //cout << "DONE Creating File . . .\n";
-    }
-    f.close();
-    //cout << "DONE in pop_vec . . .\n";
-}
 
 void bitonicMerge(int V[], int low, int count, int direction) {
     int k;
@@ -86,10 +55,14 @@ int main(int argc, char *argv[]) {
         //cout << "before: " << Vnums[i] << std::endl;
     }
 
+    struct timespec start_time, end_time;
+    clock_gettime(CLOCK_MONOTONIC, &start_time);
     bitonicSort(Vnums, 0, n, 1);
+    clock_gettime(CLOCK_MONOTONIC, &end_time);
 
     //cout << "AFTER sort . . .\n";
     for (int i = 0; i < n; i++) {
-        cout << Vnums[i] << std::endl;
+        cout << pp(Vnums[i]) << std::endl;
     }
+    printf("Bitonic Execution time: %.6f seconds\n", get_elapsed_time(start_time, end_time));
 }

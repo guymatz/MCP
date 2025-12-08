@@ -8,51 +8,9 @@
 #include <fstream>
 #include <string>
 #include <cmath>
+#include "utils.hpp"
 
 using namespace std;
-
-string pp(int i, string delim="_") {
-    string news = "";
-    string s = std::to_string(i);
-    int lens = 0;
-    while (s.length() > 3) {
-        lens = s.length();
-        news = delim + s.substr(lens-3, lens-1) + news;
-        s = s.substr(0, lens-3);
-    }
-    if (s.length() > 0)
-        news = s + news;
-    return news;
-}
-
-// Function to generate a random number
-void populate_vector(int V[], int n) {
-    //  if file exists, populate array with the file,
-    //  otherwise create file and array at the same file
-    string s; // will store ints read from the file
-    string fname = "dat/randos-" + std::to_string(n) + ".dat";
-    ifstream f(fname);
-    if (f.is_open()) {
-        //cout << "Using " << fname << " since it already exists . . ." << std::endl;
-        for (int i = 0; i < n; i++) {
-            getline(f, s);
-            V[i] = stoi(s);
-        }
-    }
-    else {
-        srand(1);
-        cout << "Using new file " << fname << std::endl;
-        size_t rando;
-        ofstream f(fname);
-        //cout << "Creating File . . .\n";
-        for (int i = 0; i < n; i++) {
-            rando = std::rand();
-            V[i] = rando;
-            f << rando << std::endl;
-        }
-    }
-    f.close();
-}
 
 int main(int argc, char *argv[]) {
 
@@ -72,6 +30,9 @@ int main(int argc, char *argv[]) {
         //cout << "BEFORE: " << Vnums[i] << std::endl;
         //cout << i << " " << Vnums[i] << std::endl;
     }
+
+    struct timespec start_time, end_time;
+    clock_gettime(CLOCK_MONOTONIC, &start_time);
 
     // See https://en.wikipedia.org/wiki/Batcher_odd%E2%80%93even_mergesort
     for (int p = 0; p < floor(log2(n)); p++) {
@@ -99,9 +60,12 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    clock_gettime(CLOCK_MONOTONIC, &end_time);
+
     //cout << "AFTER sort . . .\n";
     for (int i = 0; i < n; i++) {
         cout << pp(Vnums[i]) << std::endl;
-        //cout << i << " " << Vnums[i] << std::endl;
     }
+    printf("Batcher O/E Execution time: %.6f seconds\n", get_elapsed_time(start_time, end_time));
+
 }
