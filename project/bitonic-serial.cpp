@@ -2,7 +2,7 @@
 //#include <stdlib.h>
 //#include <time.h>
 //#include <algorithm>
-//#include <vector>
+#include <vector>
 //#include <assert.h>
 #include <iostream>
 #include <fstream>
@@ -13,7 +13,7 @@
 
 using namespace std;
 
-void bitonicMerge(size_t V[], size_t low, size_t count, int direction) {
+void bitonicMerge(vector<size_t>& V, size_t low, size_t count, int direction) {
     size_t k;
     if (count <= 1)
         return;
@@ -28,8 +28,8 @@ void bitonicMerge(size_t V[], size_t low, size_t count, int direction) {
     bitonicMerge(V, low+k, k, direction);
 }
 
-void bitonicSort(size_t V[], size_t low, size_t count, int direction) {
-    
+void bitonicSort(vector<size_t>& V, size_t low, size_t count, int direction) {
+
     size_t k;
     if (count <= 1)
         return;
@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
     if (argc == 2)
         N = stoi(argv[1]);
     size_t n = pow(2, N);
-    size_t Vnums[n];
+    std::vector<size_t> Vnums(n);
     populate_vector(Vnums, n);
 
     //cout << "n: " << n << ", N: " << N << std::endl;

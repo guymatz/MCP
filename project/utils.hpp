@@ -20,7 +20,7 @@ double get_elapsed_time(struct timespec start, struct timespec end) {
 }
 
 // Function to generate a random number
-void populate_vector(size_t V[], size_t n) {
+void populate_vector(vector<size_t>& V, size_t n) {
     //cout << "In pop vec: " << n << std::endl;;
     string s; // will store ints read from the file
     string fname = "dat/randos-" + std::to_string(n) + ".dat";
@@ -28,7 +28,7 @@ void populate_vector(size_t V[], size_t n) {
     //cout << "Checking file: " << f << std::endl;
     if (f.is_open()) {
         //cout << "Using file - " << fname << " - since it already exists . . ." << std::endl;
-        for (int i = 0; i < n; i++) {
+        for (size_t i = 0; i < n; i++) {
             //cout << i << " ";
             getline(f, s);
             V[i] = stoi(s);
@@ -40,7 +40,7 @@ void populate_vector(size_t V[], size_t n) {
         size_t rando;
         ofstream f(fname);
         //cout << "Creating File . . .\n";
-        for (int i = 0; i < n; i++) {
+        for (size_t i = 0; i < n; i++) {
             rando = std::rand();
             V[i] = rando;
             f << rando << std::endl;
