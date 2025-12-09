@@ -10,7 +10,8 @@
 ## #
 # C-Cuda
 *.dSYM
-randos*.dat
+**/randos*.dat
+**/randos*.dat.sorted
 *.x
 *.out
 *.i

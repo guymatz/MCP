@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
 
     clock_gettime(CLOCK_MONOTONIC, &end_time);
 
-    if (! verify(Vnums, N)) {
+    if (! verify(Vnums, n)) {
         printf("oopsy\n");
         return 1;
     }

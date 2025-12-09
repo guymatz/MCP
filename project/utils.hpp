@@ -23,9 +23,9 @@ double get_elapsed_time(struct timespec start, struct timespec end) {
 void populate_vector(vector<size_t>& V, size_t n, string suffix="") {
     //cout << "In pop vec: " << n << std::endl;;
     string s; // will store ints read from the file
-    string fname = "dat/randos-" + std::to_string(n) + ".dat" + suffix;
-    ifstream f(fname);
-    //cout << "Checking file: " << f << std::endl;
+    string fname = "../dat/randos-" + std::to_string(n) + ".dat" + suffix;
+    ifstream f(fname.c_str());
+    //cout << "Checking file: " << fname << std::endl;
     if (f.is_open()) {
         //cout << "Using file - " << fname << " - since it already exists . . ." << std::endl;
         for (size_t i = 0; i < n; i++) {
@@ -36,7 +36,7 @@ void populate_vector(vector<size_t>& V, size_t n, string suffix="") {
     }
     else {
         srand(1);
-        //cout << "Using new file " << fname << std::endl;
+        cout << "Using new file " << fname << std::endl;
         size_t rando;
         ofstream f(fname);
         //cout << "Creating File . . .\n";
@@ -65,15 +65,14 @@ string pp(int i, string delim="_") {
     return news;
 }
 
-bool verify(std::vector<size_t>& V, size_t N) {
+bool verify(std::vector<size_t>& V, size_t n) {
     // n is the number of elements in the list
     // n = 2**N
-    size_t n = pow(2, N);
     std::vector<size_t> sortedV(n);
-    populate_vector(sortedV, N, "sorted");
-    for (size_t i=0; i < pow(2, n); i++) {
+    populate_vector(sortedV, n, ".sorted");
+    for (size_t i=0; i < n; i++) {
         if (V[i] != sortedV[i]) {
-            cout << "N: " << N << std::endl;
+            cout << "n: " << n << std::endl;
             cout << "i: " << i << std::endl;
             cout << V[i] << " != " << sortedV[i] << std::endl;
             return false;
