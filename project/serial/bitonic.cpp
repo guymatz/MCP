@@ -9,7 +9,7 @@
 #include <string>
 #include <cmath>
 //#include <benchmark/benchmark.h>
-#include "utils.hpp"
+#include "../utils.hpp"
 
 using namespace std;
 
@@ -61,6 +61,11 @@ int main(int argc, char *argv[]) {
     clock_gettime(CLOCK_MONOTONIC, &start_time);
     bitonicSort(Vnums, 0, n, 1);
     clock_gettime(CLOCK_MONOTONIC, &end_time);
+
+    if (! verify(Vnums, N)) {
+        printf("oopsy\n");
+        return 1;
+    }
 
     //cout << "AFTER sort . . .\n";
     /*

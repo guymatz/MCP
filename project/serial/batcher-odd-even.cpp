@@ -8,7 +8,7 @@
 #include <fstream>
 #include <string>
 #include <cmath>
-#include "utils.hpp"
+#include "../utils.hpp"
 
 using namespace std;
 
@@ -61,6 +61,11 @@ int main(int argc, char *argv[]) {
     }
 
     clock_gettime(CLOCK_MONOTONIC, &end_time);
+
+    if (! verify(Vnums, N)) {
+        printf("oopsy\n");
+        return 1;
+    }
 
     //cout << "AFTER sort . . .\n";
     /*
