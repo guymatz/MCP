@@ -8,7 +8,7 @@
 #include <fstream>
 #include <string>
 #include <cmath>
-#include "serialUtils.hpp"
+#include "parallelUtils.hpp"
 
 using namespace std;
 
@@ -59,6 +59,7 @@ int main(int argc, char *argv[]) {
             }
         }
     }
+
     clock_gettime(CLOCK_MONOTONIC, &end_time);
 
     struct timespec start_time_verify, end_time_verify;
@@ -68,7 +69,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     clock_gettime(CLOCK_MONOTONIC, &end_time_verify);
-    printf("Batcher O/E Verification time: %.6f seconds\n", get_elapsed_time(start_time_verify, end_time_verify));
+    printf("Batcher O/E *Verification* time: %.6f seconds\n", get_elapsed_time(start_time_verify, end_time_verify));
 
     //cout << "AFTER sort . . .\n";
     /*
