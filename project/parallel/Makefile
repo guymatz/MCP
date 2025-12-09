@@ -1,11 +1,11 @@
 # Makefile - build every .cu into an executable with the same base name (no extension)
 
 NVCC ?= nvcc
-GCC ?= g++
+GCC ?= g++-15
 #NVCCFLAGS ?= -O2 -std=c++14
 NVCCFLAGS ?= -g -Werror all-warnings
 GCCFLAGS ?= -Wall -std=c++17 #-g 
-LDFLAGS ?= -lbenchmark
+LDFLAGS ?= -fopenmp -DAPPLE
 
 SRCS := $(wildcard *.cu)
 EXES := $(SRCS:.cu=.x)

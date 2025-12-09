@@ -9,7 +9,7 @@
 #include <string>
 #include <cmath>
 //#include <benchmark/benchmark.h>
-#include "../utils.hpp"
+#include "serialUtils.hpp"
 
 using namespace std;
 
@@ -62,10 +62,14 @@ int main(int argc, char *argv[]) {
     bitonicSort(Vnums, 0, n, 1);
     clock_gettime(CLOCK_MONOTONIC, &end_time);
 
+    struct timespec start_time_verify, end_time_verify;
+    clock_gettime(CLOCK_MONOTONIC, &start_time_verify);
     if (! verify(Vnums, n)) {
         printf("oopsy\n");
         return 1;
     }
+    clock_gettime(CLOCK_MONOTONIC, &end_time_verify);
+    printf("Batcher O/E Verification time: %.6f seconds\n", get_elapsed_time(start_time_verify, end_time_verify));
 
     //cout << "AFTER sort . . .\n";
     /*
