@@ -78,5 +78,6 @@ bool verify(std::vector<size_t>& V, size_t n) {
             return false;
         }
     }
+    cout << n << " elements are looking good!" << std::endl;
     return true;
 }
