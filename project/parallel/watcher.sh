@@ -16,7 +16,7 @@ while true; do
 		clear
 		date
 		echo "*********** $filename"
-		make clean && make $(basename ${filename%%.*}).x && ./$(basename ${filename%%.*}).x
+		make clean && make $(basename ${filename%%.*}).x && ./$(basename ${filename%%.*}).x 15
 	done
 	sleep 1
 done
