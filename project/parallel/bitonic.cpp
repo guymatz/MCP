@@ -18,7 +18,7 @@ void bitonicMerge(vector<size_t>& V, size_t low, size_t count, int direction) {
     if (count <= 1)
         return;
     k = count / 2;
-    #pragma omp parallel for
+    //#pragma omp parallel for
     for (size_t i = low; i <= low + k - 1; i++) {
         if ((direction == 1 && V[i] > V[i + k]) || (direction == 0 && V[i] < V[i + k]) ) {
             //cout << "Swapping " << V[i] << " " << V[i+k] << std::endl;
@@ -35,8 +35,20 @@ void bitonicSort(vector<size_t>& V, size_t low, size_t count, int direction) {
     if (count <= 1)
         return;
     k = count / 2;
-    bitonicSort(V, low, k, 1);
-    bitonicSort(V, low+k, k, 0);
+    #pragma omp parallel
+    {
+        #pragma omp sections
+        {
+            #pragma omp section
+            {
+                bitonicSort(V, low, k, 1);
+            }
+            #pragma omp section
+            {
+                bitonicSort(V, low+k, k, 0);
+            }
+        }
+    }
 
     bitonicMerge(V, low, count, direction);
 }
@@ -72,7 +84,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     clock_gettime(CLOCK_MONOTONIC, &end_time_verify);
-    printf("Bitonic Execution time: %.6f seconds\n", get_elapsed_time(start_time_verify, end_time_verify));
+    printf("Bitonic Verification time: %.6f seconds\n", get_elapsed_time(start_time_verify, end_time_verify));
 
     //cout << "AFTER sort . . .\n";
     /*
