@@ -13,33 +13,6 @@
 
 using namespace std;
 
-void bitonicMerge(vector<size_t>& V, size_t low, size_t count, int direction) {
-    size_t k;
-    if (count <= 1)
-        return;
-    k = count / 2;
-    for (size_t i = low; i <= low + k - 1; i++) {
-        if ((direction == 1 && V[i] > V[i + k]) || (direction == 0 && V[i] < V[i + k]) ) {
-            //cout << "Swapping " << V[i] << " " << V[i+k] << std::endl;
-            swap(V[i], V[i+k]);
-        }
-    }
-    bitonicMerge(V, low, k, direction);
-    bitonicMerge(V, low+k, k, direction);
-}
-
-void bitonicSort(vector<size_t>& V, size_t low, size_t count, int direction) {
-
-    size_t k;
-    if (count <= 1)
-        return;
-    k = count / 2;
-    bitonicSort(V, low, k, 1);
-    bitonicSort(V, low+k, k, 0);
-
-    bitonicMerge(V, low, count, direction);
-}
-
 int main(int argc, char *argv[]) {
 
     // See https://en.wikipedia.org/wiki/Bitonic_sorter
@@ -50,16 +23,36 @@ int main(int argc, char *argv[]) {
     std::vector<size_t> Vnums(n);
     populate_vector(Vnums, n);
 
-    //cout << "n: " << n << ", N: " << N << std::endl;
     /*
-    for (size_t i = 0; i < n; i++) {
-        cout << "before: " << Vnums[i] << std::endl;
+    for (int i = 0; i < n; i++) {
+        cout << pp(Vnums[i]) << std::endl;
     }
     */
 
     struct timespec start_time, end_time;
     clock_gettime(CLOCK_MONOTONIC, &start_time);
-    bitonicSort(Vnums, 0, n, 1);
+
+    int startIdx, distance, subArraySize, swapPartner;
+
+    // We loop through "sub arrays" of the original vector, 2 elements, then
+    // 4 , then 8 . . .
+    for (subArraySize=2; subArraySize<=n; subArraySize=subArraySize*2 ) {
+        // we break the problem into "sub array" halves
+        for (distance=subArraySize/2; distance>0; distance=distance/2) {
+            for (startIdx=0; startIdx<n; startIdx++) {
+                // we loop through elements of the sub array and sort
+                // "distant" neighbors
+                swapPartner=startIdx^distance;
+                if ((swapPartner)>startIdx) {
+                    if ((startIdx&subArraySize)==0 && Vnums[startIdx] > Vnums[swapPartner]) 
+                        swap(Vnums[startIdx], Vnums[swapPartner]);
+                    if ((startIdx&subArraySize)!=0 && Vnums[startIdx] < Vnums[swapPartner])
+                        swap(Vnums[swapPartner], Vnums[startIdx]);
+                }
+            }
+        }
+    }
+
     clock_gettime(CLOCK_MONOTONIC, &end_time);
 
     struct timespec start_time_verify, end_time_verify;
@@ -71,11 +64,14 @@ int main(int argc, char *argv[]) {
     clock_gettime(CLOCK_MONOTONIC, &end_time_verify);
     printf("Bitonic Verification time: %.6f seconds\n", get_elapsed_time(start_time_verify, end_time_verify));
 
+
     //cout << "AFTER sort . . .\n";
+
     /*
     for (int i = 0; i < n; i++) {
         cout << pp(Vnums[i]) << std::endl;
     }
     */
+
     printf("Bitonic Execution time: %.6f seconds\n", get_elapsed_time(start_time, end_time));
 }
