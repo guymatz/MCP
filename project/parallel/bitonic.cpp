@@ -9,7 +9,8 @@
 #include <string>
 #include <cmath>
 //#include <benchmark/benchmark.h>
-#include "serialUtils.hpp"
+#include "parallelUtils.hpp"
+#include "omp.h"
 
 using namespace std;
 
@@ -32,22 +33,27 @@ int main(int argc, char *argv[]) {
     struct timespec start_time, end_time;
     clock_gettime(CLOCK_MONOTONIC, &start_time);
 
-    int startIdx, distance, subArraySize, swapPartner;
+    size_t startIdx, distance, subArraySize, swapPartner;
 
     // We loop through "sub arrays" of the original vector, 2 elements, then
     // 4 , then 8 . . .
     for (subArraySize=2; subArraySize<=n; subArraySize=subArraySize*2 ) {
         // we break the problem into "sub array" halves
         for (distance=subArraySize/2; distance>0; distance=distance/2) {
+            #pragma omp for
             for (startIdx=0; startIdx<n; startIdx++) {
                 // we loop through elements of the sub array and sort
                 // "distant" neighbors
                 swapPartner=startIdx^distance;
-                if ((swapPartner)>startIdx) {
-                    if ((startIdx&subArraySize)==0 && Vnums[startIdx] > Vnums[swapPartner]) 
+                if ( swapPartner >startIdx ) {
+                    if ((startIdx & subArraySize)==0 && Vnums[startIdx] > Vnums[swapPartner])  {
+                        //cout << "0 : " << startIdx << " " << subArraySize << " " << (startIdx&subArraySize) << std::endl;
                         swap(Vnums[startIdx], Vnums[swapPartner]);
-                    if ((startIdx&subArraySize)!=0 && Vnums[startIdx] < Vnums[swapPartner])
+                    }
+                    if (((startIdx & subArraySize) !=0) && Vnums[startIdx] < Vnums[swapPartner]) {
+                        //cout << "!=0 : " << startIdx << " " << subArraySize << " " << (startIdx&subArraySize) << std::endl;
                         swap(Vnums[swapPartner], Vnums[startIdx]);
+                    }
                 }
             }
         }

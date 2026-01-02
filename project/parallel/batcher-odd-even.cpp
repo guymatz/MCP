@@ -26,10 +26,12 @@ int main(int argc, char *argv[]) {
     std::vector<size_t> Vnums(n);
     populate_vector(Vnums, n);
 
+    /*
     for (size_t i = 0; i < n; i++) {
-        //cout << "BEFORE: " << Vnums[i] << std::endl;
+        cout << "BEFORE: " << Vnums[i] << std::endl;
         //cout << i << " " << Vnums[i] << std::endl;
     }
+    */
 
     struct timespec start_time, end_time;
     clock_gettime(CLOCK_MONOTONIC, &start_time);

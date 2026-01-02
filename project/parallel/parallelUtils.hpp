@@ -19,7 +19,7 @@ bool verify(std::vector<size_t>& V, size_t n) {
     bool verifySucceeded = true;
     std::vector<size_t> sortedV(n);
     populate_vector(sortedV, n, ".sorted");
-    #pragma omp parallel for
+    //#pragma omp parallel for
     for (size_t i=0; i < n; i++) {
         if (V[i] != sortedV[i]) {
             cout << "n: " << n << std::endl;
