@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
             size_t n_1_rk = n-1-rk;
             #pragma omp parallel for
             for (size_t j = (rk % rp); j <= n_1_rk; j=j+2*rk) {   //  is this right?!
-                //cout << 3 << std::endl;
+                //cout << omp_get_thread_num()  << std::endl;
                 for (size_t i = 0; i <= fmin(rk-1, n-j-rk-1); i++) {
                     //cout << " " << rp << " " << rk << " " << i << " " << j << " " << std::endl;
                     if (floor((i+j) / (rp*2)) == floor((i+j+rk) / (rp*2))) {
