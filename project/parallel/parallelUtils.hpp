@@ -13,21 +13,36 @@
 
 using namespace std;
 
-bool verify(std::vector<size_t>& V, size_t n) {
+bool verify(std::vector<size_t>& V, size_t n, bool verbose=false) {
     // n is the number of elements in the list
     // n = 2**N
     bool verifySucceeded = true;
     std::vector<size_t> sortedV(n);
+
+    struct timespec start_time, end_time;
+    clock_gettime(CLOCK_MONOTONIC, &start_time);
     populate_vector(sortedV, n, ".sorted");
+    clock_gettime(CLOCK_MONOTONIC, &end_time);
+    printf("Sorted File Load time: %.6f seconds\n", get_elapsed_time(start_time, end_time));
+
+    //cout << "Verbose? " << verbose << std::endl;
+    clock_gettime(CLOCK_MONOTONIC, &start_time);
     #pragma omp parallel for
     for (size_t i=0; i < n; i++) {
+        //cout << omp_get_thread_num() << std::endl;
         if (V[i] != sortedV[i]) {
-            cout << "n: " << n << std::endl;
-            cout << "i: " << i << std::endl;
-            cout << V[i] << " != " << sortedV[i] << std::endl;
+            if (verbose) {
+                cout << "n: " << n << std::endl;
+                cout << "i: " << i << std::endl;
+                cout << V[i] << " != " << sortedV[i] << std::endl;
+            }
             verifySucceeded = false;
         }
     }
-    cout << n << " elements are looking good!" << std::endl;
+    clock_gettime(CLOCK_MONOTONIC, &end_time);
+    printf("Array Comparison time: %.6f seconds\n", get_elapsed_time(start_time, end_time));
+    if (verifySucceeded)
+        cout << n << " elements are looking good!" << std::endl;
+
     return verifySucceeded;
 }

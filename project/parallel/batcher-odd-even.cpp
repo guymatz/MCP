@@ -8,6 +8,7 @@
 #include <fstream>
 #include <string>
 #include <cmath>
+#include "omp.h"
 #include "parallelUtils.hpp"
 
 using namespace std;
@@ -15,7 +16,7 @@ using namespace std;
 int main(int argc, char *argv[]) {
 
     //  These var names make sense when you look at the wikipedia page below
-    int N = 4;
+    size_t N = 4;
     if (argc == 2)
         N = stoi(argv[1]);
     size_t n = pow(2, N);
@@ -26,24 +27,25 @@ int main(int argc, char *argv[]) {
     std::vector<size_t> Vnums(n);
     populate_vector(Vnums, n);
 
-    for (size_t i = 0; i < n; i++) {
-        //cout << "BEFORE: " << Vnums[i] << std::endl;
-        //cout << i << " " << Vnums[i] << std::endl;
-    }
-
     struct timespec start_time, end_time;
     clock_gettime(CLOCK_MONOTONIC, &start_time);
 
     // See https://en.wikipedia.org/wiki/Batcher_odd%E2%80%93even_mergesort
-    for (size_t p = 0; p < floor(log2(n)); p++) {
+    for (size_t p = 0; p < N; p++) {
         rp = pow(2, p);
-        for (size_t k = 0; k < floor(log2(n)); k++) {
+        //cout << 1 << std::endl;
+        //#pragma omp parallel for
+        for (size_t k = 0; k < N; k++) {
+            //cout << 2 << std::endl;
             rk = (int)(rp / pow(2, k));
             if (rk < 1)
                 continue;
             //cout << rk << " " << k << " " << p << std::endl;
             //continue; 
-            for (size_t j = (rk % rp); j <= n-1-rk; j=j+2*rk) {   //  is this right?!
+            size_t n_1_rk = n-1-rk;
+            #pragma omp parallel for
+            for (size_t j = (rk % rp); j <= n_1_rk; j=j+2*rk) {   //  is this right?!
+                //cout << omp_get_thread_num()  << std::endl;
                 for (size_t i = 0; i <= fmin(rk-1, n-j-rk-1); i++) {
                     //cout << " " << rp << " " << rk << " " << i << " " << j << " " << std::endl;
                     if (floor((i+j) / (rp*2)) == floor((i+j+rk) / (rp*2))) {
