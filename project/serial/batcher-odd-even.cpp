@@ -35,9 +35,9 @@ int main(int argc, char *argv[]) {
     clock_gettime(CLOCK_MONOTONIC, &start_time);
 
     // See https://en.wikipedia.org/wiki/Batcher_odd%E2%80%93even_mergesort
-    for (size_t p = 0; p < floor(log2(n)); p++) {
+    for (size_t p = 0; p < N; p++) {
         rp = pow(2, p);
-        for (size_t k = 0; k < floor(log2(n)); k++) {
+        for (size_t k = 0; k < N; k++) {
             rk = (int)(rp / pow(2, k));
             if (rk < 1)
                 continue;
