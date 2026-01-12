@@ -8,7 +8,7 @@
 #include <fstream>
 #include <string>
 #include <cmath>
-#include "serialUtils.hpp"
+#include "cudaUtils.cuh"
 
 using namespace std;
 
@@ -25,10 +25,11 @@ int main(int argc, char *argv[]) {
     size_t rp, rk;
     std::vector<size_t> Vnums(n);
     populate_vector(Vnums, n);
-
+/*
     for (size_t i = 0; i < n; i++) {
         cout << i << " " << Vnums[i] << std::endl;
     }
+*/
 
     struct timespec start_time, end_time;
     clock_gettime(CLOCK_MONOTONIC, &start_time);
@@ -69,11 +70,12 @@ int main(int argc, char *argv[]) {
     clock_gettime(CLOCK_MONOTONIC, &end_time_verify);
     printf("Batcher O/E Verification time: %.6f seconds\n", get_elapsed_time(start_time_verify, end_time_verify));
 
+/*
     cout << "AFTER sort . . .\n";
-
     for (int i = 0; i < n; i++) {
         cout << pp(Vnums[i]) << std::endl;
     }
+*/
 
     printf("Batcher O/E Execution time: %.6f seconds\n", get_elapsed_time(start_time, end_time));
 

@@ -9,7 +9,7 @@
 #include <string>
 #include <cmath>
 //#include <benchmark/benchmark.h>
-#include "serialUtils.hpp"
+#include "cudaUtils.cuh"
 
 using namespace std;
 
