@@ -13,6 +13,20 @@
 
 using namespace std;
 
+__global__ void sortKernel(double* A, int rows, int cols) {
+
+        int row = blockIdx.y * blockDim.y + threadIdx.y;
+        int col = blockIdx.x * blockDim.x + threadIdx.x;
+
+        if ( row < rows && col < cols) {
+            int idx = row * cols + col;
+            idx++;
+            //C[idx] = A[idx] + B[idx];
+        }
+
+
+}
+
 int main(int argc, char *argv[]) {
 
     // See https://en.wikipedia.org/wiki/Bitonic_sorter
@@ -20,17 +34,25 @@ int main(int argc, char *argv[]) {
     if (argc == 2)
         N = stoi(argv[1]);
     size_t n = pow(2, N);
-    std::vector<size_t> Vnums(n);
-    populate_vector(Vnums, n);
+    std::vector<int> h_V(n);
+    populate_vector(h_V, n);
 
-    /*
+    // Size in bytes for the ROWS x COLS matrix
+    int size = n * sizeof(double);
+
     for (int i = 0; i < n; i++) {
-        cout << pp(Vnums[i]) << std::endl;
+        cout << pp(h_V[i]) << std::endl;
     }
-    */
 
     struct timespec start_time, end_time;
     clock_gettime(CLOCK_MONOTONIC, &start_time);
+
+    // Device memory allocation
+    double* d_V;
+    cudaMalloc((void **)&d_V, size);
+
+    // Copy matrices A and B from host to device
+    cudaMemcpy(d_V, &(h_V[0]), size, cudaMemcpyHostToDevice);
 
     int startIdx, distance, subArraySize, swapPartner;
 
@@ -44,20 +66,27 @@ int main(int argc, char *argv[]) {
                 // "distant" neighbors
                 swapPartner=startIdx^distance;
                 if ((swapPartner)>startIdx) {
-                    if ((startIdx&subArraySize)==0 && Vnums[startIdx] > Vnums[swapPartner]) 
-                        swap(Vnums[startIdx], Vnums[swapPartner]);
-                    if ((startIdx&subArraySize)!=0 && Vnums[startIdx] < Vnums[swapPartner])
-                        swap(Vnums[swapPartner], Vnums[startIdx]);
+                    if ((startIdx&subArraySize)==0 && h_V[startIdx] > h_V[swapPartner]) 
+                        swap(h_V[startIdx], h_V[swapPartner]);
+                    if ((startIdx&subArraySize)!=0 && h_V[startIdx] < h_V[swapPartner])
+                        swap(h_V[swapPartner], h_V[startIdx]);
                 }
             }
         }
     }
 
+    cudaMemcpy(&(h_V[0]), d_V, size, cudaMemcpyDeviceToHost);
+
     clock_gettime(CLOCK_MONOTONIC, &end_time);
+
+    cout << "***** AFTER sort . . .\n";
+    for (int i = 0; i < n; i++) {
+        cout << pp(h_V[i]) << std::endl;
+    }
 
     struct timespec start_time_verify, end_time_verify;
     clock_gettime(CLOCK_MONOTONIC, &start_time_verify);
-    if (! verify(Vnums, n)) {
+    if (! verify(h_V, n)) {
         printf("oopsy\n");
         return 1;
     }
@@ -65,13 +94,8 @@ int main(int argc, char *argv[]) {
     printf("Bitonic Verification time: %.6f seconds\n", get_elapsed_time(start_time_verify, end_time_verify));
 
 
-    //cout << "AFTER sort . . .\n";
-
-    /*
-    for (int i = 0; i < n; i++) {
-        cout << pp(Vnums[i]) << std::endl;
-    }
-    */
-
     printf("Bitonic Execution time: %.6f seconds\n", get_elapsed_time(start_time, end_time));
+
+    cudaFree(d_V);
+    free(&(h_V[0]));
 }

@@ -12,7 +12,7 @@ else
 fi
 
 while true; do
-	$cmd | while read filename; do
+	$cmd | while read _ _ filename; do
 		clear
 		date
 		echo "*********** $filename"
