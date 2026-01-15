@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
     //int ij, ijrk;
     // for ranges of loops
     size_t rp, rk;
-    std::vector<size_t> Vnums(n);
+    std::vector<int> Vnums(n);
     populate_vector(Vnums, n);
 /*
     for (size_t i = 0; i < n; i++) {
