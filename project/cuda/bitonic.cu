@@ -13,18 +13,32 @@
 
 using namespace std;
 
-__global__ void sortKernel(double* A, int rows, int cols) {
+__global__ void sortKernel(int* d_V, int subArraySize, int distance, int N) {
 
-        int row = blockIdx.y * blockDim.y + threadIdx.y;
-        int col = blockIdx.x * blockDim.x + threadIdx.x;
+    int idx = blockIdx.x * blockDim.x + threadIdx.x;
+    int swapPartner = idx^distance;
+    if (idx >= N)
+        return;
+    if (swapPartner < idx)
+        return;
+    if (swapPartner >= N)
+        return;
+    if ((subArraySize % distance) != 0)
+        return;
 
-        if ( row < rows && col < cols) {
-            int idx = row * cols + col;
-            idx++;
-            //C[idx] = A[idx] + B[idx];
-        }
-
-
+    if ((idx & subArraySize)==0 && d_V[idx] > d_V[swapPartner]) {
+        //swap(d_V[idx], d_V[swapPartner]);
+        int tmp = d_V[idx];
+        d_V[idx] = d_V[swapPartner];
+        d_V[swapPartner] = tmp;
+    }
+    if ((idx & subArraySize)!=0 && d_V[idx] < d_V[swapPartner]) {
+        //swap(d_V[swapPartner], d_V[idx]);
+        int tmp = d_V[idx];
+        d_V[idx] = d_V[swapPartner];
+        d_V[swapPartner] = tmp;
+    }
+    //printf("%i\t\t%i\t\t%i\t%i\n", subArraySize, distance,  idx, swapPartner);
 }
 
 int main(int argc, char *argv[]) {
@@ -41,37 +55,36 @@ int main(int argc, char *argv[]) {
     int size = n * sizeof(double);
 
     for (int i = 0; i < n; i++) {
-        cout << pp(h_V[i]) << std::endl;
+//        cout << pp(h_V[i]) << std::endl;
     }
 
     struct timespec start_time, end_time;
     clock_gettime(CLOCK_MONOTONIC, &start_time);
 
     // Device memory allocation
-    double* d_V;
+    int mt = getMaxThreads();
+    int blocks = ceil( (float)n / mt);
+    //cout << "n: " << n << ", threads: " << mt << ", blocks: " << blocks << std::endl;
+    int* d_V;
     cudaMalloc((void **)&d_V, size);
 
     // Copy matrices A and B from host to device
     cudaMemcpy(d_V, &(h_V[0]), size, cudaMemcpyHostToDevice);
 
-    int startIdx, distance, subArraySize, swapPartner;
+    int distance, subArraySize;
+
+    // Define block and grid sizes
+    //dim3 blockSize(16, 16);
+    //dim3 gridSize((WIDTH + blockSize.x - 1) / blockSize.x, (WIDTH + blockSize.y - 1) / blockSize.y);
 
     // We loop through "sub arrays" of the original vector, 2 elements, then
     // 4 , then 8 . . .
+    printf("subArraySize\tdistance\tidx\tswapPartner\n");
     for (subArraySize=2; subArraySize<=n; subArraySize=subArraySize*2 ) {
         // we break the problem into "sub array" halves
         for (distance=subArraySize/2; distance>0; distance=distance/2) {
-            for (startIdx=0; startIdx<n; startIdx++) {
-                // we loop through elements of the sub array and sort
-                // "distant" neighbors
-                swapPartner=startIdx^distance;
-                if ((swapPartner)>startIdx) {
-                    if ((startIdx&subArraySize)==0 && h_V[startIdx] > h_V[swapPartner]) 
-                        swap(h_V[startIdx], h_V[swapPartner]);
-                    if ((startIdx&subArraySize)!=0 && h_V[startIdx] < h_V[swapPartner])
-                        swap(h_V[swapPartner], h_V[startIdx]);
-                }
-            }
+            // Launch the matrixTransposition kernel (do NOT copy back the resulting M_T from Device to Host)
+            sortKernel<<<blocks, mt>>>(d_V, subArraySize, distance, n);
         }
     }
 
@@ -79,9 +92,11 @@ int main(int argc, char *argv[]) {
 
     clock_gettime(CLOCK_MONOTONIC, &end_time);
 
-    cout << "***** AFTER sort . . .\n";
-    for (int i = 0; i < n; i++) {
-        cout << pp(h_V[i]) << std::endl;
+    if (N <= 3) {
+        cout << "***** AFTER sort . . .\n";
+        for (int i = 0; i < n; i++) {
+            cout << pp(h_V[i]) << std::endl;
+        }
     }
 
     struct timespec start_time_verify, end_time_verify;
@@ -97,5 +112,5 @@ int main(int argc, char *argv[]) {
     printf("Bitonic Execution time: %.6f seconds\n", get_elapsed_time(start_time, end_time));
 
     cudaFree(d_V);
-    free(&(h_V[0]));
+    h_V.clear();
 }
