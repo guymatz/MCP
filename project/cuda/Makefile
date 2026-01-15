@@ -3,7 +3,7 @@
 NVCC ?= nvcc
 GCC ?= g++
 #NVCCFLAGS ?= -O2 -std=c++14
-NVCCFLAGS ?= -g -Werror all-warnings
+NVCCFLAGS ?= -G -Werror all-warnings
 GCCFLAGS ?= -Wall -std=c++17 #-g 
 LDFLAGS ?= #-lbenchmark
 
