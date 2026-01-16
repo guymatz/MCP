@@ -108,5 +108,6 @@ int main(int argc, char *argv[]) {
     printf("Bitonic Execution time: %.6f seconds\n", get_elapsed_time(start_time, end_time));
 
     cudaFree(d_V);
+    //  No need to free a vector - https://stackoverflow.com/a/3054584/2623252
     h_V.clear();
 }
