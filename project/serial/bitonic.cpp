@@ -19,8 +19,8 @@ int main(int argc, char *argv[]) {
     int N = 4;
     if (argc == 2)
         N = stoi(argv[1]);
-    size_t n = pow(2, N);
-    std::vector<size_t> Vnums(n);
+    int n = pow(2, N);
+    std::vector<int> Vnums(n);
     populate_vector(Vnums, n);
 
     /*

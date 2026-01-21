@@ -24,8 +24,8 @@ int main(int argc, char *argv[]) {
     if (argc >= 3) {
         verbose = true;
     }
-    size_t n = pow(2, N);
-    std::vector<size_t> Vnums(n);
+    int n = pow(2, N);
+    std::vector<int> Vnums(n);
     populate_vector(Vnums, n);
 
     /*
@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
     struct timespec start_time, end_time;
     clock_gettime(CLOCK_MONOTONIC, &start_time);
 
-    size_t startIdx, distance, subArraySize, swapPartner;
+    int startIdx, distance, subArraySize, swapPartner;
 
     // We loop through "sub arrays" of the original vector, 2 elements, then
     // 4 , then 8 . . .
@@ -54,11 +54,11 @@ int main(int argc, char *argv[]) {
                     //cout << omp_get_thread_num() << "\t\t" << subArraySize << "\t\t" << distance << "\t\t" << startIdx << "\t\t" << swapPartner << std::endl << std::endl;
                     // Check "direction" of sort, and values in array
                     // First ascending . . .
-                    if ( ( ((size_t)floor(startIdx / subArraySize) % 2) == 0) && Vnums[startIdx] > Vnums[swapPartner])  {
+                    if ( ( ((int)floor(startIdx / subArraySize) % 2) == 0) && Vnums[startIdx] > Vnums[swapPartner])  {
                         swap(Vnums[startIdx], Vnums[swapPartner]);
                     }
                     // then descending
-                    if ( ( ((size_t)floor(startIdx / subArraySize) % 2) !=0) && Vnums[startIdx] < Vnums[swapPartner]) {
+                    if ( ( ((int)floor(startIdx / subArraySize) % 2) !=0) && Vnums[startIdx] < Vnums[swapPartner]) {
                         //cout << "!=0 : " << startIdx << " " << subArraySize << " " << (startIdx&subArraySize) << std::endl;
                         swap(Vnums[swapPartner], Vnums[startIdx]);
                     }

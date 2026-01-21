@@ -12,12 +12,12 @@
 
 using namespace std;
 
-bool verify(std::vector<size_t>& V, size_t n) {
+bool verify(std::vector<int>& V, int n) {
     // n is the number of elements in the list
     // n = 2**N
-    std::vector<size_t> sortedV(n);
+    std::vector<int> sortedV(n);
     populate_vector(sortedV, n, ".sorted");
-    for (size_t i=0; i < n; i++) {
+    for (int i=0; i < n; i++) {
         if (V[i] != sortedV[i]) {
             cout << V[i] << " != " << sortedV[i] << std::endl;
             return false;

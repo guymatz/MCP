@@ -13,11 +13,11 @@
 
 using namespace std;
 
-bool verify(std::vector<size_t>& V, size_t n, bool verbose=false) {
+bool verify(std::vector<int>& V, int n, bool verbose=false) {
     // n is the number of elements in the list
     // n = 2**N
     bool verifySucceeded = true;
-    std::vector<size_t> sortedV(n);
+    std::vector<int> sortedV(n);
 
     struct timespec start_time, end_time;
     clock_gettime(CLOCK_MONOTONIC, &start_time);
@@ -28,7 +28,7 @@ bool verify(std::vector<size_t>& V, size_t n, bool verbose=false) {
     //cout << "Verbose? " << verbose << std::endl;
     clock_gettime(CLOCK_MONOTONIC, &start_time);
     #pragma omp parallel for
-    for (size_t i=0; i < n; i++) {
+    for (int i=0; i < n; i++) {
         //cout << omp_get_thread_num() << std::endl;
         if (V[i] != sortedV[i]) {
             if (verbose) {

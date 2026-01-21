@@ -28,10 +28,10 @@ void populate_vector(vector<int>& V, int n, string suffix="") {
     //cout << "Checking file: " << fname << std::endl;
     if (f.is_open()) {
         //cout << "Using file - " << fname << " - since it already exists . . ." << std::endl;
-        for (size_t i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++) {
             //cout << i << " ";
             getline(f, s);
-            V[i] = stoi(s);
+            V[i] = stod(s);
         }
     }
     else {
@@ -46,9 +46,19 @@ void populate_vector(vector<int>& V, int n, string suffix="") {
             f << rando << std::endl;
         }
         //cout << "DONE Creating File . . .\n";
+
+        // Now we create sorted file
+        fname = fname + ".sorted";
+        ofstream sortedf(fname.c_str());
+        vector<int> sortedV = V;
+        sort(sortedV.begin(), sortedV.end());
+        for (auto i: sortedV)
+            sortedf << i << std::endl;
+        sortedf.close();
     }
     f.close();
     //cout << "DONE in pop_vec . . .\n";
+
 }
 
 string pp(int i, string delim="_") {
