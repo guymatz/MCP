@@ -10,15 +10,15 @@ using namespace std;
 __global__ void sortKernel(int* d_V, int subArraySize, int distance, int N) {
 
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
-    int swapPartner = idx^distance;
     if (idx >= N)
-        return;
-    if (swapPartner < idx)
-        return;
-    if (swapPartner >= N)
         return;
     if ((subArraySize % distance) != 0)
         return;
+    int swapPartner = idx^distance;
+    if (swapPartner < idx || swapPartner >= N)
+        return;
+
+    //printf("%i\n", idx);
 
     if ((idx & subArraySize)==0 && d_V[idx] > d_V[swapPartner]) {
         // swap does not exist in CUDA :-(
@@ -43,8 +43,15 @@ int main(int argc, char *argv[]) {
     if (argc == 2)
         N = stoi(argv[1]);
     size_t n = pow(2, N);
+    cout << "verbose: " << n << " " << N << " @ " << currentTime() << std::endl;
     std::vector<int> h_V(n);
+
+    struct timespec start_time, end_time, load_time, sort_time, copy_to_device_time, copy_to_host_time;
+    cout << "Populating Vector . . . " << std::endl;
+    clock_gettime(CLOCK_MONOTONIC, &start_time);
     populate_vector(h_V, n);
+    clock_gettime(CLOCK_MONOTONIC, &load_time);
+    cout << "Populating Vector time: " << get_elapsed_time(start_time, load_time) << std::endl;
 
     /*  Why can't I do this?!
     bool verbose = argv->std::find("-v") != argv.end();
@@ -53,15 +60,14 @@ int main(int argc, char *argv[]) {
     */
 
     // Size in bytes for the ROWS x COLS matrix
-    int size = n * sizeof(double);
+    int size = n * sizeof(int);
 
     // Vector before
     for (int i = 0; i < n; i++) {
 //        cout << pp(h_V[i]) << std::endl;
     }
 
-    struct timespec start_time, end_time;
-    clock_gettime(CLOCK_MONOTONIC, &start_time);
+    cout << "Copying data to GPU . . ." << std::endl;
 
     // Device memory allocation
     int mt = getMaxThreads();
@@ -70,12 +76,14 @@ int main(int argc, char *argv[]) {
     cudaMalloc((void **)&d_V, size);
 
     // Copy vector from host to device
-    cudaMemcpy(d_V, &(h_V[0]), size, cudaMemcpyHostToDevice);
+    checkCuda( cudaMemcpy(d_V, &(h_V[0]), size, cudaMemcpyHostToDevice) );
+    clock_gettime(CLOCK_MONOTONIC, &copy_to_device_time);
+    cout << "Copy Out Time: " << get_elapsed_time(load_time, copy_to_device_time) << std::endl;
 
     int distance, subArraySize;
+    //printf("subArraySize\tdistance\tidx\tswapPartner\n");
     // We loop through "sub arrays" of the original vector, 2 elements, then
     // 4 , then 8 . . .
-    printf("subArraySize\tdistance\tidx\tswapPartner\n");
     for (subArraySize=2; subArraySize<=n; subArraySize=subArraySize*2 ) {
         // we break the problem into "sub array" halves
         for (distance=subArraySize/2; distance>0; distance=distance/2) {
@@ -84,8 +92,14 @@ int main(int argc, char *argv[]) {
             //cout << "After: " << subArraySize << " " << distance << std::endl;
         }
     }
+    clock_gettime(CLOCK_MONOTONIC, &sort_time);
+    cout << "Sort Time: " << get_elapsed_time(copy_to_device_time, sort_time) << std::endl;
 
-    cudaMemcpy(&(h_V[0]), d_V, size, cudaMemcpyDeviceToHost);
+    //cout << "Before: " << sizeof(h_V) << " " << sizeof(d_V) << " " << size << std::endl;
+    cout << "Copy In . . . " << std::endl;
+    checkCuda( cudaMemcpy(&(h_V[0]), d_V, size, cudaMemcpyDeviceToHost) );
+    clock_gettime(CLOCK_MONOTONIC, &copy_to_host_time);
+    cout << "Copy In Time: " << get_elapsed_time(sort_time, copy_to_host_time) << std::endl;
 
     clock_gettime(CLOCK_MONOTONIC, &end_time);
 

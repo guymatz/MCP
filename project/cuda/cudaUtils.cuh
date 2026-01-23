@@ -12,7 +12,7 @@
 
 using namespace std;
 
-bool verify(std::vector<int>& V, size_t n, bool verbose=false) {
+bool verify(std::vector<int>& V, int n, bool verbose=false) {
     // n is the number of elements in the list
     // n = 2**N
     std::vector<int> sortedV(n);
