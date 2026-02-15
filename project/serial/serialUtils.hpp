@@ -1,7 +1,7 @@
 //#include <stdio.h>
 //#include <stdlib.h>
 //#include <time.h>
-//#include <algorithm>
+#include <algorithm>
 //#include <vector>
 //#include <assert.h>
 #include <iostream>

@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
     if (argc == 2)
         N = stoi(argv[1]);
     size_t n = pow(2, N);
-    cout << "verbose: " << n << " " << N << " @ " << currentTime() << std::endl;
+    //cout << "verbose: " << n << " " << N << " @ " << currentTime() << std::endl;
     std::vector<int> h_V(n);
 
     struct timespec start_time, end_time, load_time, sort_time, copy_to_device_time, copy_to_host_time;
@@ -64,7 +64,7 @@ int main(int argc, char *argv[]) {
 
     // Vector before
     for (int i = 0; i < n; i++) {
-//        cout << pp(h_V[i]) << std::endl;
+//        cout << pprint(h_V[i]) << std::endl;
     }
 
     cout << "Copying data to GPU . . ." << std::endl;
@@ -106,7 +106,7 @@ int main(int argc, char *argv[]) {
     if (N <= 3) {
         cout << "***** AFTER sort . . .\n";
         for (int i = 0; i < n; i++) {
-            cout << pp(h_V[i]) << std::endl;
+            cout << pprint(h_V[i]) << std::endl;
         }
     }
 

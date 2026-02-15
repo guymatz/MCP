@@ -35,6 +35,7 @@ int main(int argc, char *argv[]) {
     clock_gettime(CLOCK_MONOTONIC, &start_time);
 
     // See https://en.wikipedia.org/wiki/Batcher_odd%E2%80%93even_mergesort
+    cout << "i\tfmin(rk-1, n-j-rk-1)\trk\trp" << std::endl;
     for (int p = 0; p < N; p++) {
         rp = pow(2, p);
         for (int k = 0; k < N; k++) {
@@ -45,7 +46,7 @@ int main(int argc, char *argv[]) {
             //continue; 
             for (int j = (rk % rp); j <= n-1-rk; j=j+2*rk) {   //  is this right?!
                 for (int i = 0; i <= fmin(rk-1, n-j-rk-1); i++) {
-                    //cout << " " << rp << " " << rk << " " << i << " " << j << " " << std::endl;
+                    cout << i << "\t" << fmin(rk-1, n-j-rk-1) << "\t\t\t" << rk << "\t" << rp << "\t" << std::endl;
                     if (floor((i+j) / (rp*2)) == floor((i+j+rk) / (rp*2))) {
                         if ( Vnums[i+j] > Vnums[i+j+rk] ) {
                             //cout << Vnums[i+j] << " <-> " << Vnums[i+j+rk] << std::endl;
@@ -73,7 +74,7 @@ int main(int argc, char *argv[]) {
     //cout << "AFTER sort . . .\n";
     /*
     for (int i = 0; i < n; i++) {
-        cout << pp(Vnums[i]) << std::endl;
+        cout << pprint(Vnums[i]) << std::endl;
     }
     */
     printf("Batcher O/E Execution time: %.6f seconds\n", get_elapsed_time(start_time, end_time));

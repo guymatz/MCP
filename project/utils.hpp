@@ -1,7 +1,7 @@
 //#include <stdio.h>
 //#include <stdlib.h>
 //#include <time.h>
-//#include <algorithm>
+#include <algorithm>
 //#include <vector>
 //#include <assert.h>
 #include <iostream>
@@ -51,7 +51,7 @@ void populate_vector(vector<int>& V, int n, string suffix="") {
         fname = fname + ".sorted";
         ofstream sortedf(fname.c_str());
         vector<int> sortedV = V;
-        sort(sortedV.begin(), sortedV.end());
+        std::sort(sortedV.begin(), sortedV.end());
         for (auto i: sortedV)
             sortedf << i << std::endl;
         sortedf.close();
@@ -61,7 +61,7 @@ void populate_vector(vector<int>& V, int n, string suffix="") {
 
 }
 
-string pp(int i, string delim="_") {
+string pprint(int i, string delim="_") {
     string news = "";
     string s = std::to_string(i);
     int lens = 0;

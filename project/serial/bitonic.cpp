@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
 
     /*
     for (int i = 0; i < n; i++) {
-        cout << pp(Vnums[i]) << std::endl;
+        cout << pprint(Vnums[i]) << std::endl;
     }
     */
 
@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
 
     /*
     for (int i = 0; i < n; i++) {
-        cout << pp(Vnums[i]) << std::endl;
+        cout << pprint(Vnums[i]) << std::endl;
     }
     */
 

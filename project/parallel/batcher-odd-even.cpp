@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
     //cout << "AFTER sort . . .\n";
     /*
     for (int i = 0; i < n; i++) {
-        cout << pp(Vnums[i]) << std::endl;
+        cout << pprint(Vnums[i]) << std::endl;
     }
     */
     printf("Batcher O/E Execution time: %.6f seconds\n", get_elapsed_time(start_time, end_time));
