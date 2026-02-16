@@ -12,19 +12,22 @@
 
 using namespace std;
 
+//                          (d_V, fmin(pk-1, n-j-pk-1), j, pk, pp
 __global__ void sortKernel(int *V, int i, int j, int pk, int pp) {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
 
-    if (idx >= j ) {
+    /*
+    if (idx > j+1 ) {
         return;
     }
+    */
 
     //printf("After: %i\n", idx);
     //printf("%i: %i\t%i\t\t\t%i\t%i\n",  idx, i , j , pk , pp);
 
     if (floor((double)(idx+j) / (pp*2)) == floor(((double)idx+j+pk) / (pp*2))) {
         if ( V[idx+j] > V[idx+j+pk] ) {
-            //cout << Vnums[i+j] << " <-> " << Vnums[i+j+pk] << std::endl;
+            //printf("%i <-> %i\n",  V[i+j], V[i+j+pk]);
             //  YES, I KNOW!
             int ij = V[idx+j];
             int ijpk = V[idx+j+pk];
@@ -32,7 +35,7 @@ __global__ void sortKernel(int *V, int i, int j, int pk, int pp) {
             V[idx+j+pk] = ij;
         }
         else {
-            //cout << V[i+j] << " >-< " << V[i+j+pk] << std::endl;
+            //printf("*** %i >-< %i\n",  V[i+j], V[i+j+pk]);
         }
     }
 }
@@ -66,8 +69,8 @@ int main(int argc, char *argv[]) {
 
     cout << "Copying data to GPU . . ." << std::endl;
     // Device memory allocation
-    int mt = getMaxThreads();
-    int blocks = ceil( (float)n / mt);
+    int threads = getMaxThreads();
+    int blocks = ceil( (float)n / threads);
     int* d_V;
     cudaMalloc((void **)&d_V, size);
 
@@ -81,12 +84,13 @@ int main(int argc, char *argv[]) {
     //cout << "i\tfmin(rk-1, n-j-rk-1)\trk\trp" << std::endl;
     for (int p = 0; p < N; p++) {
         pp = pow(2, p);
+        cout << p << " " << pp << std::endl;
         for (int k = 0; k < N; k++) {
             pk = (int)(pp / pow(2, k));
             if (pk < 1)
                 continue;
             for (int j = (pk % pp); j <= n-1-pk; j=j+2*pk) {
-                sortKernel<<<blocks, mt>>>(d_V, fmin(pk-1, n-j-pk-1), j, pk, pp);
+                sortKernel<<<blocks, threads>>>(d_V, fmin(pk-1, n-j-pk-1), j, pk, pp);
                 //cout << std::endl;
             }
         }
