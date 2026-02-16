@@ -16,14 +16,9 @@ using namespace std;
 __global__ void sortKernel(int *V, int i, int j, int pk, int pp) {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
 
-    /*
-    if (idx > j+1 ) {
+    if (idx > i ) {
         return;
     }
-    */
-
-    //printf("After: %i\n", idx);
-    //printf("%i: %i\t%i\t\t\t%i\t%i\n",  idx, i , j , pk , pp);
 
     if (floor((double)(idx+j) / (pp*2)) == floor(((double)idx+j+pk) / (pp*2))) {
         if ( V[idx+j] > V[idx+j+pk] ) {
@@ -84,7 +79,7 @@ int main(int argc, char *argv[]) {
     //cout << "i\tfmin(rk-1, n-j-rk-1)\trk\trp" << std::endl;
     for (int p = 0; p < N; p++) {
         pp = pow(2, p);
-        cout << p << " " << pp << std::endl;
+        //cout << p << " " << pp << std::endl;
         for (int k = 0; k < N; k++) {
             pk = (int)(pp / pow(2, k));
             if (pk < 1)
