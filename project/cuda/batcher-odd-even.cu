@@ -12,25 +12,38 @@
 
 using namespace std;
 
-//                          (d_V, fmin(pk-1, n-j-pk-1), j, pk, pp
-__global__ void sortKernel(int *V, int i, int j, int pk, int pp) {
+__global__ void printKernel(int *V, int n) {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
 
-    if (idx > i ) {
-        return;
+    if (idx == 0) {
+        for (int i = 0; i < n; i++) {
+            printf("%i - %i\n", i, V[i]);
+        }
     }
+}
 
-    if (floor((double)(idx+j) / (pp*2)) == floor(((double)idx+j+pk) / (pp*2))) {
-        if ( V[idx+j] > V[idx+j+pk] ) {
-            //printf("%i <-> %i\n",  V[i+j], V[i+j+pk]);
-            //  YES, I KNOW!
-            int ij = V[idx+j];
-            int ijpk = V[idx+j+pk];
-            V[idx+j] = ijpk;
-            V[idx+j+pk] = ij;
+__global__ void sortKernel(int *V, int n, int ODD) {
+    int idx = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if ( (idx < n-1) && (idx % 2 == ODD) ) {
+        //char oe_flag = 'E';
+        //if (ODD) oe_flag='O';
+        int ORIGIN_idx = idx;
+        int PARTNER_idx = idx + 1;
+        printf("ORIGIN_IDX = %i, PARTNER_idx = %i\n", ORIGIN_idx, PARTNER_idx);
+        //printf("OE FLAG: %c, idx = %i, ORIGIN_IDX = %i, PARTNER_idx = %i\n", oe_flag, idx, ORIGIN_idx, PARTNER_idx);
+        int origin_val = V[ORIGIN_idx];
+        int partner_val = V[PARTNER_idx];
+        if ( origin_val > partner_val ) {
+        //printf("COMPARING %c +++ %i (%i) >? %i (%i)\n",  oe_flag, V[ORIGIN_idx], ORIGIN_idx, V[PARTNER_idx], PARTNER_idx);
+
+            /* printf("B %c +++ %i (%i) > %i (%i)\n",  oe_flag, V[ORIGIN_idx], ORIGIN_idx, V[PARTNER_idx], PARTNER_idx); */
+            V[ORIGIN_idx] = partner_val;
+            V[PARTNER_idx] = origin_val;
+            /* printf("A %c +++ %i (%i) > %i (%i)\n",  oe_flag, V[ORIGIN_idx], ORIGIN_idx, V[PARTNER_idx], PARTNER_idx); */
         }
         else {
-            //printf("*** %i >-< %i\n",  V[i+j], V[i+j+pk]);
+            //printf("%c --- %i (%i) < %i (%i)\n",  oe_flag, origin_val, ORIGIN_idx, partner_val, PARTNER_idx);
         }
     }
 }
@@ -51,7 +64,7 @@ int main(int argc, char *argv[]) {
     //printf("Working with a list of 2^%i (%i)\n", N, n);
     //int ij, ijrk;
     // for ranges of loops
-    int pp, pk;
+    /* int pp, pk; */
     std::vector<int> Vnums(n);
     populate_vector(Vnums, n);
     clock_gettime(CLOCK_MONOTONIC, &load_time);
@@ -59,7 +72,7 @@ int main(int argc, char *argv[]) {
     int size = n * sizeof(int);
 
     for (int i = 0; i < n; i++) {
-       // cout << i << " " << pprint(Vnums[i]) << std::endl;
+       //cout << i << " " << pprint(Vnums[i]) << std::endl;
     }
 
     cout << "Copying data to GPU . . ." << std::endl;
@@ -67,6 +80,9 @@ int main(int argc, char *argv[]) {
     int threads = getMaxThreads();
     int blocks = ceil( (float)n / threads);
     int* d_V;
+    int EVEN, ODD;
+    EVEN = 0;
+    ODD = 1;
     cudaMalloc((void **)&d_V, size);
 
     // Copy vector from host to device
@@ -77,19 +93,20 @@ int main(int argc, char *argv[]) {
     // See https://en.wikipedia.org/wiki/Batcher_odd%E2%80%93even_mergesort
     // Again, bad var names, but see link
     //cout << "i\tfmin(rk-1, n-j-rk-1)\trk\trp" << std::endl;
-    for (int p = 0; p < N; p++) {
-        pp = pow(2, p);
-        //cout << p << " " << pp << std::endl;
-        for (int k = 0; k < N; k++) {
-            pk = (int)(pp / pow(2, k));
-            if (pk < 1)
-                continue;
-            for (int j = (pk % pp); j <= n-1-pk; j=j+2*pk) {
-                sortKernel<<<blocks, threads>>>(d_V, fmin(pk-1, n-j-pk-1), j, pk, pp);
-                //cout << std::endl;
-            }
-        }
+    for (int p = 0; p < n/2 ; p++) {
+        //printf("EVEN %i of %i\n", p, n/2);
+        sortKernel<<<blocks, threads>>>(d_V, n, EVEN);
+        //cudaDeviceSynchronize(); printf("EVEN after\n");
+        //printKernel<<<blocks, threads>>>(d_V, n);
+        //cudaDeviceSynchronize(); printf("ODD\n");
+        //printf("ODD\n");
+        sortKernel<<<blocks, threads>>>(d_V, n, ODD);
+        //cudaDeviceSynchronize(); printf("ODD after\n");
+        //printKernel<<<blocks, threads>>>(d_V, n);
+        //cudaDeviceSynchronize(); cout << "Waiting . . ."; cin >> poop;
     }
+    //printf("ODD\n");
+    sortKernel<<<blocks, threads>>>(d_V, n, ODD);
     clock_gettime(CLOCK_MONOTONIC, &sort_time);
 
     // Copy vector from device to host
@@ -102,6 +119,7 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < n; i++) {
         //cout << pprint(Vnums[i]) << std::endl;
     }
+
 
     clock_gettime(CLOCK_MONOTONIC, &start_time_verify);
     if (! verify(Vnums, n)) {
