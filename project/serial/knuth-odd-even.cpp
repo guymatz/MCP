@@ -41,6 +41,7 @@ int main(int argc, char *argv[]) {
     clock_gettime(CLOCK_MONOTONIC, &start_time);
 
     int r, d;
+    int origin, partner;
     // See https://en.wikipedia.org/wiki/Batcher_odd%E2%80%93even_mergesort
     //cout << pow(2, N-1) << "\t" << n << "\t" << N << "\t"  << std::endl;
     for (int p = pow(2, t-1); p > 0; p = p / 2) {
@@ -48,11 +49,13 @@ int main(int argc, char *argv[]) {
         r = 0;
         d = p;
         for (int q = pow(2, t-1); p <= q; q = q / 2) {
-            cout << p << "\t" << q << "\t" << r << "\t"  << d << std::endl;
+            //cout << p << "\t" << q << "\t" << r << "\t"  << d << std::endl;
             for (int i = 0; i < N-d; i++) {
-                cout << "***\t" << i+1  << "\t"  << i+d+1 << std::endl;
+                origin = i;
+                partner = i+d;
                 if ((i & p) == r) {
-                    compex(Vnums, i+1, i+d+1);
+                    //cout << "***\t" << origin  << "\t"  << partner << "\t" << (i & p) << "\t" << r << std::endl;
+                    compex(Vnums, origin, partner);
                 }
             }
             if (q != p) {
