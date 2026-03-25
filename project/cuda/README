@@ -1,0 +1,40 @@
+From The Art of Computer Programming vol 3, by Knuth.  P. 112
+
+Batcher’s sorting scheme is similar to shellsort, but the comparisons are
+done in a novel way so that no propagation of exchanges is necessary. We can,
+for instance, compare Table 1 (on the next page) to Table 5.2.1–3; Batcher’s
+method achieves the eﬀect of 8-sorting, 4-sorting, 2-sorting, and 1-sorting,
+but the comparisons do not overlap. Since Batcher’s algorithm essentially
+merges pairs of sorted subsequences, it may be called the “merge exchange sort.”
+
+Algorithm M (Merge exchange). Records R1, . . . , RN are rearranged in place;
+after sorting is complete their keys will be in order, K1 ≤ · · · ≤ KN. We assume
+that N ≥ 2.
+
+M1. [Initialize p.]
+    Set p ← 2^(t-1), where t = ⌈lg N ⌉ is the least integer such that
+    2t ≥ N. (Steps M2 through M5 will be performed for p = 2^(t-1), 2^(t-2), . . . , 1.)
+M2. [Initialize q, r, d.]
+    Set q ← 2^(t-1), r ← 0, d ← p.
+
+M3. [Loop on i.]
+    For all i such that 0 ≤ i < N - d and i & p = r, do step M4.
+    Then go to step M5. (Here i & p means the “bitwise and” of the binary
+    representations of i and p; each bit of the result is zero except where both
+    i and p have 1-bits in corresponding positions. Thus 13 & 21 = (1101)2 &
+    (10101)2 = (00101)2 = 5. At this point, d is an odd multiple of p, and p is a
+    power of 2, so that i & p ̸= (i + d) & p; it follows that the actions of step M4
+    can be done for all relevant i in any order, even simultaneously.)
+
+M4. [Compare/exchange Ri+1 : Ri+d+1.]
+    If Ki+1 > Ki+d+1, interchange the records Ri+1 ↔ Ri+d+1.
+
+M5. [Loop on q.]
+    If q ̸= p, set d ← q - p, q ← q/2, r ← p, and return to M3.
+
+M6. [Loop on p.]
+    (At this point the permutation K1 K2 . . . KN is p-ordered.)
+    Set p ← ⌊p/2⌋. If p > 0, go back to M2.
+
+NB: I have modified this algorithm slightly.  In step M4 I compare K_i & K_i+d,
+    not K_i+1 & K_i+d+1.  It seems to work!!

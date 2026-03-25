@@ -22,29 +22,23 @@ __global__ void printKernel(int *V, int n) {
     }
 }
 
-__global__ void sortKernel(int *V, int n, int ODD) {
+__device__ void compex(int *V, int origin, int partner) {
+    if (V[origin] > V[partner]) {
+        int temp = V[origin];
+        V[origin] = V[partner];
+        V[partner] = temp;
+    }
+}
+
+__global__ void sortKernel(int *Vnums, int N, int d, int p, int r) {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
 
-    //printf("idx: %i, ODD: %i\n", idx, ODD);
-    if ( idx < (n-ODD) ) {
-        //char oe_flag = 'E';
-        //if (ODD) oe_flag='O';
-        int ORIGIN_idx = 2 * idx + ODD;
-        int PARTNER_idx = 2 * idx + 1 + ODD;
-        //printf("ODD: %i, ORIGIN_IDX = %i, PARTNER_idx = %i\n", ODD, ORIGIN_idx, PARTNER_idx);
-        //printf("OE FLAG: %c, idx = %i, ORIGIN_IDX = %i, PARTNER_idx = %i\n", oe_flag, idx, ORIGIN_idx, PARTNER_idx);
-        int origin_val = V[ORIGIN_idx];
-        int partner_val = V[PARTNER_idx];
-        if ( origin_val > partner_val ) {
-            //printf("SWAPPING %c +++ %i (%i) >? %i (%i)\n",  ODD, V[ORIGIN_idx], ORIGIN_idx, V[PARTNER_idx], PARTNER_idx);
-
-            /* printf("B %c +++ %i (%i) > %i (%i)\n",  oe_flag, V[ORIGIN_idx], ORIGIN_idx, V[PARTNER_idx], PARTNER_idx); */
-            V[ORIGIN_idx] = partner_val;
-            V[PARTNER_idx] = origin_val;
-            /* printf("A %c +++ %i (%i) > %i (%i)\n",  oe_flag, V[ORIGIN_idx], ORIGIN_idx, V[PARTNER_idx], PARTNER_idx); */
-        }
-        else {
-            //printf("%c --- %i (%i) < %i (%i)\n",  oe_flag, origin_val, ORIGIN_idx, partner_val, PARTNER_idx);
+    if ( idx < (N - d) ) {
+        int ORIGIN_idx = idx ;
+        int PARTNER_idx = ORIGIN_idx + d;
+        if ((ORIGIN_idx & p) == r) {
+            //cout << "***\t" << origin  << "\t"  << partner << "\t" << (i & p) << "\t" << r << std::endl;
+            compex(Vnums, ORIGIN_idx, PARTNER_idx);
         }
     }
 }
@@ -52,38 +46,32 @@ __global__ void sortKernel(int *V, int n, int ODD) {
 
 int main(int argc, char *argv[]) {
 
-    struct timespec start_time, end_time, load_time, sort_time, 
+    struct timespec start_time, end_time, load_time, sort_time,
                     copy_to_device_time, copy_to_host_time,
                     start_time_verify, end_time_verify;
     clock_gettime(CLOCK_MONOTONIC, &start_time);
 
-    //  These var names make sense when you look at the wikipedia page below
-    int N = 4;
+    //  These var names make sense when you look at the README
+    int t = 4;
     if (argc == 2)
-        N = stoi(argv[1]);
-    int n = pow(2, N);
-    //printf("Working with a list of 2^%i (%i)\n", N, n);
-    //int ij, ijrk;
-    // for ranges of loops
-    /* int pp, pk; */
-    std::vector<int> Vnums(n);
-    populate_vector(Vnums, n);
+        t = stoi(argv[1]);
+    int N = pow(2, t);
+
+    std::vector<int> Vnums(N);
+    populate_vector(Vnums, N);
     clock_gettime(CLOCK_MONOTONIC, &load_time);
     // Size in bytes for the ROWS x COLS matrix
-    int size = n * sizeof(int);
+    int size = N * sizeof(int);
 
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < N; i++) {
        //cout << i << " " << pprint(Vnums[i]) << std::endl;
     }
 
     cout << "Copying data to GPU . . ." << std::endl;
     // Device memory allocation
-    int threads = getMaxThreads() / 2;
-    int blocks = ceil( (float)n / threads);
+    int threads = getMaxThreads();
+    int blocks = ceil( (float)N / threads);
     int* d_V;
-    int EVEN, ODD;
-    EVEN = 0;
-    ODD = 1;
     cudaMalloc((void **)&d_V, size);
 
     // Copy vector from host to device
@@ -91,22 +79,22 @@ int main(int argc, char *argv[]) {
     clock_gettime(CLOCK_MONOTONIC, &copy_to_device_time);
     cout << "Copy Out Time: " << get_elapsed_time(load_time, copy_to_device_time) << std::endl;
 
-    // See https://en.wikipedia.org/wiki/Batcher_odd%E2%80%93even_mergesort
-    // Again, bad var names, but see link
-    //cout << "i\tfmin(rk-1, n-j-rk-1)\trk\trp" << std::endl;
-    for (int p = 0; p < n/2 ; p++) {
-        //printf("EVEN %i of %i\n", p, n/2);
-        sortKernel<<<blocks, threads>>>(d_V, n/2, EVEN);
-        //cudaDeviceSynchronize(); printf("EVEN after\n");
-        //printKernel<<<blocks, threads>>>(d_V, n);
-        //cudaDeviceSynchronize(); printf("ODD\n");
-        //printf("ODD\n");
-        sortKernel<<<blocks, threads>>>(d_V, n/2, ODD);
-        //cudaDeviceSynchronize(); printf("ODD after\n");
-        //printKernel<<<blocks, threads>>>(d_V, n);
+    // See Knuth - Art of Computing Volume 3, p. 112
+    // Again, bad var names, but see README
+    int r, d;
+    for (int p = pow(2, t-1); p > 0; p = p / 2) {
+        cout << p << "\t" << N << "\t" << t << "\t"  << std::endl;
+        r = 0;
+        d = p;
+        for (int q = pow(2, t-1); p <= q; q = q / 2) {
+            //cout << p << "\t" << q << "\t" << r << "\t"  << d << std::endl;
+            sortKernel<<<blocks, threads>>>(d_V, N, d, p, r);
+            if (q != p) {
+                d = q - p;
+            }
+            r = p;
+        }
     }
-    //printf("ODD\n");
-    sortKernel<<<blocks, threads>>>(d_V, n/2, ODD);
     clock_gettime(CLOCK_MONOTONIC, &sort_time);
 
     // Copy vector from device to host
@@ -116,13 +104,13 @@ int main(int argc, char *argv[]) {
 
 
     cout << "AFTER sort . . .\n";
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < N; i++) {
         //cout << pprint(Vnums[i]) << std::endl;
     }
 
 
     clock_gettime(CLOCK_MONOTONIC, &start_time_verify);
-    if (! verify(Vnums, n, false)) {
+    if (! verify(Vnums, N, false)) {
         printf("oopsy\n");
         return 1;
     }
