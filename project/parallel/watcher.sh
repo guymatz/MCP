@@ -5,6 +5,9 @@
 # ./ MODIFY matrix_addition.cu
 # ./ MODIFY .matrix_addition.cu.swp
 
+SIZE=${1-3}
+echo SIZE is $SIZE
+
 if [[ "$(uname -a)" =~ Darwin ]]; then
 	cmd="fswatch . -1"
 else
@@ -12,11 +15,11 @@ else
 fi
 
 while true; do
-	$cmd | while read _ _ filename; do
+	$cmd | while read filename; do
 		clear
 		date
 		echo "*********** $filename"
-		make $(basename ${filename%%.*}).x && ./$(basename ${filename%%.*}).x 3
+		make clean && make $(basename ${filename%%.*}).x && ./$(basename ${filename%%.*}).x $SIZE
 	done
 	sleep 1
 done
