@@ -85,5 +85,5 @@ int main(int argc, char *argv[]) {
       cout << pprint(Vnums[i]) << std::endl;
   }
   */
-  printf("knuth-batcher, %i, %i, %.6f\n", N, t, get_elapsed_time(start_time, end_time));
+  printf("batcher-odd-even, %i, %i, %.6f\n", t, N, get_elapsed_time(start_time, end_time));
 }
