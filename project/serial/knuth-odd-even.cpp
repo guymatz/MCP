@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     clock_gettime(CLOCK_MONOTONIC, &end_time_verify);
-    printf("Batcher O/E Verification time: %.6f seconds\n", get_elapsed_time(start_time_verify, end_time_verify));
+    /* printf("Batcher O/E Verification time: %.6f seconds\n", get_elapsed_time(start_time_verify, end_time_verify)); */
 
     //cout << "AFTER sort . . .\n";
     /*
@@ -81,6 +81,6 @@ int main(int argc, char *argv[]) {
         cout << pprint(Vnums[i]) << std::endl;
     }
     */
-    printf("Batcher O/E Execution time: %.6f seconds\n", get_elapsed_time(start_time, end_time));
+    printf("knuth-batcher, %i, %i, %.6f\n", N, t, get_elapsed_time(start_time, end_time));
 
 }

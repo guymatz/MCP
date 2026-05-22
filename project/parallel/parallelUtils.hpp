@@ -23,7 +23,7 @@ bool verify(std::vector<int>& V, int n, bool verbose=false) {
     clock_gettime(CLOCK_MONOTONIC, &start_time);
     populate_vector(sortedV, n, ".sorted");
     clock_gettime(CLOCK_MONOTONIC, &end_time);
-    printf("Sorted File Load time: %.6f seconds\n", get_elapsed_time(start_time, end_time));
+    /* printf("Sorted File Load time: %.6f seconds\n", get_elapsed_time(start_time, end_time)); */
 
     //cout << "Verbose? " << verbose << std::endl;
     clock_gettime(CLOCK_MONOTONIC, &start_time);
@@ -40,9 +40,11 @@ bool verify(std::vector<int>& V, int n, bool verbose=false) {
         }
     }
     clock_gettime(CLOCK_MONOTONIC, &end_time);
-    printf("Array Comparison time: %.6f seconds\n", get_elapsed_time(start_time, end_time));
+    /* printf("Array Comparison time: %.6f seconds\n", get_elapsed_time(start_time, end_time)); */
+    /*
     if (verifySucceeded)
         cout << n << " elements are looking good!" << std::endl;
+    */
 
     return verifySucceeded;
 }

@@ -17,7 +17,7 @@ __global__ void printKernel(int *V, int n) {
 
     if (idx == 0) {
         for (int i = 0; i < n; i++) {
-            printf("%i - %i\n", i, V[i]);
+            /* printf("%i - %i\n", i, V[i]); */
         }
     }
 }
@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
        //cout << i << " " << pprint(Vnums[i]) << std::endl;
     }
 
-    cout << "Copying data to GPU . . ." << std::endl;
+    /* cout << "Copying data to GPU . . ." << std::endl; */
     // Device memory allocation
     int threads = getMaxThreads();
     int blocks = ceil( (float)N / threads);
@@ -77,13 +77,13 @@ int main(int argc, char *argv[]) {
     // Copy vector from host to device
     checkCuda( cudaMemcpy(d_V, &(Vnums[0]), size, cudaMemcpyHostToDevice) );
     clock_gettime(CLOCK_MONOTONIC, &copy_to_device_time);
-    cout << "Copy Out Time: " << get_elapsed_time(load_time, copy_to_device_time) << std::endl;
+    /* cout << "Copy Out Time: " << get_elapsed_time(load_time, copy_to_device_time) << std::endl; */
 
     // See Knuth - Art of Computing Volume 3, p. 112
     // Again, bad var names, but see README
     int r, d;
     for (int p = pow(2, t-1); p > 0; p = p / 2) {
-        cout << p << "\t" << N << "\t" << t << "\t"  << std::endl;
+        /* cout << p << "\t" << N << "\t" << t << "\t"  << std::endl; */
         r = 0;
         d = p;
         for (int q = pow(2, t-1); p <= q; q = q / 2) {
@@ -100,10 +100,10 @@ int main(int argc, char *argv[]) {
     // Copy vector from device to host
     checkCuda( cudaMemcpy(&(Vnums[0]), d_V, size, cudaMemcpyDeviceToHost) );
     clock_gettime(CLOCK_MONOTONIC, &copy_to_host_time);
-    cout << "Copy In Time: " << get_elapsed_time(sort_time, copy_to_host_time) << std::endl;
+    /* cout << "Copy In Time: " << get_elapsed_time(sort_time, copy_to_host_time) << std::endl; */
 
 
-    cout << "AFTER sort . . .\n";
+    /* cout << "AFTER sort . . .\n"; */
     for (int i = 0; i < N; i++) {
         //cout << pprint(Vnums[i]) << std::endl;
     }
@@ -115,10 +115,10 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     clock_gettime(CLOCK_MONOTONIC, &end_time_verify);
-    printf("Batcher-O/E Verification time: %.6f seconds\n", get_elapsed_time(start_time_verify, end_time_verify));
+    /* printf("Batcher-O/E Verification time: %.6f seconds\n", get_elapsed_time(start_time_verify, end_time_verify)); */
 
     clock_gettime(CLOCK_MONOTONIC, &end_time);
 
-    printf("Batcher-O/E Execution time: %.6f seconds\n", get_elapsed_time(start_time, end_time));
+    printf("batcher, %i, %i, %.6f\n", N, t, get_elapsed_time(start_time, end_time));
 
 }

@@ -23,6 +23,6 @@ bool verify(std::vector<int>& V, int n) {
             return false;
         }
     }
-    cout << n << " elements are looking good!" << std::endl;
+    //cout << n << " elements are looking good!" << std::endl;
     return true;
 }

@@ -47,11 +47,12 @@ int main(int argc, char *argv[]) {
     std::vector<int> h_V(n);
 
     struct timespec start_time, end_time, load_time, sort_time, copy_to_device_time, copy_to_host_time;
-    cout << "Populating Vector . . . " << std::endl;
+    struct timespec start_kernel_time, end_kernel_time;
+    /* cout << "Populating Vector . . . " << std::endl; */
     clock_gettime(CLOCK_MONOTONIC, &start_time);
     populate_vector(h_V, n);
     clock_gettime(CLOCK_MONOTONIC, &load_time);
-    cout << "Populating Vector time: " << get_elapsed_time(start_time, load_time) << std::endl;
+    /* cout << "Populating Vector time: " << get_elapsed_time(start_time, load_time) << std::endl; */
 
     /*  Why can't I do this?!
     bool verbose = argv->std::find("-v") != argv.end();
@@ -67,7 +68,7 @@ int main(int argc, char *argv[]) {
 //        cout << pprint(h_V[i]) << std::endl;
     }
 
-    cout << "Copying data to GPU . . ." << std::endl;
+    /* cout << "Copying data to GPU . . ." << std::endl; */
 
     // Device memory allocation
     int mt = getMaxThreads();
@@ -78,28 +79,33 @@ int main(int argc, char *argv[]) {
     // Copy vector from host to device
     checkCuda( cudaMemcpy(d_V, &(h_V[0]), size, cudaMemcpyHostToDevice) );
     clock_gettime(CLOCK_MONOTONIC, &copy_to_device_time);
-    cout << "Copy Out Time: " << get_elapsed_time(load_time, copy_to_device_time) << std::endl;
+    /* cout << "Copy Out Time: " << get_elapsed_time(load_time, copy_to_device_time) << std::endl; */
 
     int distance, subArraySize;
-    //printf("subArraySize\tdistance\tidx\tswapPartner\n");
+    /* printf("subArraySize\tdistance\tidx\tswapPartner\n"); */
     // We loop through "sub arrays" of the original vector, 2 elements, then
     // 4 , then 8 . . .
     for (subArraySize=2; subArraySize<=n; subArraySize=subArraySize*2 ) {
         // we break the problem into "sub array" halves
         for (distance=subArraySize/2; distance>0; distance=distance/2) {
-            //cout << "Before: " << subArraySize << " " << distance << std::endl;
+            /* cout << "Before: " << subArraySize << " " << distance << std::endl; */
+            clock_gettime(CLOCK_MONOTONIC, &start_kernel_time);
             sortKernel<<<blocks, mt>>>(d_V, subArraySize, distance, n);
+            clock_gettime(CLOCK_MONOTONIC, &end_kernel_time);
+            /* printf("\t\t%.6f\n", get_elapsed_time(start_kernel_time, end_kernel_time)); */
             //cout << "After: " << subArraySize << " " << distance << std::endl;
         }
+        /* std::cout << "Done with subArraySize = " << subArraySize << std::endl; */
     }
+        cudaDeviceSynchronize();
     clock_gettime(CLOCK_MONOTONIC, &sort_time);
-    cout << "Sort Time: " << get_elapsed_time(copy_to_device_time, sort_time) << std::endl;
+    /* cout << "Sort Time: " << get_elapsed_time(copy_to_device_time, sort_time) << std::endl; */
 
     //cout << "Before: " << sizeof(h_V) << " " << sizeof(d_V) << " " << size << std::endl;
-    cout << "Copy In . . . " << std::endl;
+    /* cout << "Copy In . . . " << std::endl; */
     checkCuda( cudaMemcpy(&(h_V[0]), d_V, size, cudaMemcpyDeviceToHost) );
     clock_gettime(CLOCK_MONOTONIC, &copy_to_host_time);
-    cout << "Copy In Time: " << get_elapsed_time(sort_time, copy_to_host_time) << std::endl;
+    /* cout << "Copy In Time: " << get_elapsed_time(sort_time, copy_to_host_time) << std::endl; */
 
     clock_gettime(CLOCK_MONOTONIC, &end_time);
 
@@ -117,9 +123,9 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     clock_gettime(CLOCK_MONOTONIC, &end_time_verify);
-    printf("Bitonic Verification time: %.6f seconds\n", get_elapsed_time(start_time_verify, end_time_verify));
+    /* printf("Bitonic Verification time: %.6f seconds\n", get_elapsed_time(start_time_verify, end_time_verify)); */
 
-    printf("Bitonic Execution time: %.6f seconds\n", get_elapsed_time(start_time, end_time));
+    printf("bitonic, %i, %zu, %.6f\n", N, n, get_elapsed_time(start_time, end_time));
 
     cudaFree(d_V);
     //  No need to free a vector - https://stackoverflow.com/a/3054584/2623252
