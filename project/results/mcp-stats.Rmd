@@ -1,0 +1,22 @@
+---
+title: "MCP Results"
+output: html_document
+date: "2026-05-22"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(readr)
+cuda_results <- read_csv("cuda-results.csv", col_names=FALSE,
+                         col_types=c("c", "i", "i", "d"))
+colnames(cuda_results) = c("algorithm", "n", "2_n", "s")
+parallel_results <- read_csv("parallel-results.csv", col_names=FALSE,
+                         col_types=c("c", "i", "i", "d"))
+colnames(parallel_results) = c("algorithm", "n", "2_n", "s")
+serial_results <- read_csv("serial-results.csv", col_names=FALSE,
+                         col_types=c("c", "i", "i", "d"))
+colnames(serial_results) = c("algorithm", "n", "2_n", "s")
+```
