@@ -10,7 +10,7 @@ LDFLAGS ?= #-lbenchmark
 SRCS := $(wildcard *.cu)
 EXES := $(SRCS:.cu=.x)
 SRCS := $(SRCS) $(wildcard *.cpp)
-EXES := $(EXES) $(SRCS:.cpp=.x)
+#EXES := $(EXES) $(SRCS:.cpp=.x)
 $(info $(SRCS))
 $(info $(EXES))
 
