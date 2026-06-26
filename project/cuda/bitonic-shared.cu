@@ -6,7 +6,66 @@
 
 #include "cudaUtils.cuh"
 
+#define SHARED_MEM_MAX_ITEMS 1024
+
 using namespace std;
+
+__global__ void sortKernelWithSharedMemory(int *d_V, int subArraySize, int distance, int N) {
+    int idx = blockIdx.x * blockDim.x + threadIdx.x;
+    /* printf("Block with Shared Memory: %i\n", blockIdx.x); */
+    if (idx >= N)
+        return;
+    // set up shared memory
+    __shared__ int sm[SHARED_MEM_MAX_ITEMS * sizeof(int)];
+    // only copy over the first time this is called, when subArraySize = 2, and distance = 1
+    if (subArraySize == 2 && distance == 1)
+    {
+        /* printf("Copying idx: %i\n", idx); */
+        sm[idx] = d_V[idx];
+    }
+
+    __syncthreads();
+
+    if ((subArraySize % distance) != 0)
+        return;
+    int swapPartner = idx ^ distance;
+    if (swapPartner < idx || swapPartner >= N)
+        return;
+
+    // printf("%i\n", idx);
+    /* printf("Comparing: %i <> %i : at %i - %i\n", d_V[idx], d_V[swapPartner], idx, swapPartner); */
+    if ((idx & subArraySize) == 0 && sm[idx] > sm[swapPartner])
+    {
+        // swap does not exist in CUDA :-(
+        // swap(d_V[idx], d_V[swapPartner]);
+        int tmp = sm[idx];
+        sm[idx] = sm[swapPartner];
+        sm[swapPartner] = tmp;
+    }
+    if ((idx & subArraySize) != 0 && sm[idx] < sm[swapPartner])
+    {
+        // swap does not exist in CUDA :-(
+        // swap(d_V[swapPartner], d_V[idx]);
+        int tmp = sm[idx];
+        sm[idx] = sm[swapPartner];
+        sm[swapPartner] = tmp;
+    }
+    //  We are now done with being able to use shared memory
+    /* printf("HERE idx: %i, sAS: %i, dist: %i\n", idx, subArraySize, distance); */
+    if (threadIdx.x == 0 && subArraySize == N && distance == 1)
+    {
+        __syncthreads();
+        for (int i = 0; i < N; i++)
+        {
+            /* printf("Copying idx: %i - %i\n", i, sm[i]); */
+            d_V[i] = sm[i];
+        }
+    }
+    else if (subArraySize == 1)
+    {
+        __syncthreads();
+    }
+}
 
 __global__ void sortKernel(int *d_V, int subArraySize, int distance, int N) {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
@@ -98,7 +157,16 @@ int main(int argc, char *argv[]) {
         {
             /* cout << "Before: " << subArraySize << " " << distance << std::endl; */
             clock_gettime(CLOCK_MONOTONIC, &start_kernel_time);
-            sortKernel<<<blocks, mtc>>>(d_V, subArraySize, distance, n);
+            if (n <= mtc)
+            {
+                /* std::cout << "SHARED - SubArraySize: " << subArraySize << ", Distance: " << distance << ", n: " << n << ", mtc: " << mtc << std::endl; */
+                sortKernelWithSharedMemory<<<blocks, mtc>>>(d_V, subArraySize, distance, n);
+            }
+            else
+            {
+                /* std::cout << "regular - SubArraySize: " << subArraySize << ", Distance: " << distance << ", n: " << n << std::endl;*/ 
+                sortKernel<<<blocks, mtc>>>(d_V, subArraySize, distance, n);
+            }
             clock_gettime(CLOCK_MONOTONIC, &end_kernel_time);
             /* printf("\t\t%.6f\n", get_elapsed_time(start_kernel_time,
              * end_kernel_time)); */
@@ -141,7 +209,7 @@ int main(int argc, char *argv[]) {
     /* printf("Bitonic Verification time: %.6f seconds\n",
      * get_elapsed_time(start_time_verify, end_time_verify)); */
 
-    printf("bitonic, %i, %zu, %.6f\n", N, n, get_elapsed_time(start_time, end_time));
+    printf("bitonic-shared, %i, %zu, %.6f\n", N, n, get_elapsed_time(start_time, end_time));
 
     cudaFree(d_V);
     //  No need to free a vector - https://stackoverflow.com/a/3054584/2623252

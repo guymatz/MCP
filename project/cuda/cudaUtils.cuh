@@ -57,7 +57,7 @@ int getMaxThreads(int i = 0) {
   // Get the properties of the device
   cudaGetDeviceProperties(&prop, i);
   // return Max # of thread allowed
-  return ceil(sqrt(prop.maxThreadsPerBlock));
+  return ceil(prop.maxThreadsPerBlock);
 }
 
 void printGPUproperties() {
