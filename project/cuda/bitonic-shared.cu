@@ -6,8 +6,6 @@
 
 #include "cudaUtils.cuh"
 
-#define SHARED_MEM_MAX_ITEMS 1024
-
 using namespace std;
 
 __global__ void sortKernelWithSharedMemory(int *d_V, int subArraySize, int distance, int N) {
@@ -16,7 +14,7 @@ __global__ void sortKernelWithSharedMemory(int *d_V, int subArraySize, int dista
     if (idx >= N)
         return;
     // set up shared memory
-    __shared__ int sm[SHARED_MEM_MAX_ITEMS * sizeof(int)];
+    __shared__ int sm[SHARED_MEM_MAX_ITEMS];
     // only copy over the first time this is called, when subArraySize = 2, and distance = 1
     if (subArraySize == 2 && distance == 1)
     {

@@ -21,8 +21,8 @@ M3. [Loop on i.]
     For all i such that 0 ≤ i < N - d and i & p = r, do step M4.
     Then go to step M5. (Here i & p means the “bitwise and” of the binary
     representations of i and p; each bit of the result is zero except where both
-    i and p have 1-bits in corresponding positions. Thus 13 & 21 = (1101)2 &
-    (10101)2 = (00101)2 = 5. At this point, d is an odd multiple of p, and p is a
+    i and p have 1-bits in corresponding positions. Thus 13 & 21 = (1101)_2 &
+    (10101)_2 = (00101)_2 = 5. At this point, d is an odd multiple of p, and p is a
     power of 2, so that i & p ̸= (i + d) & p; it follows that the actions of step M4
     can be done for all relevant i in any order, even simultaneously.)
 
@@ -36,5 +36,5 @@ M6. [Loop on p.]
     (At this point the permutation K1 K2 . . . KN is p-ordered.)
     Set p ← ⌊p/2⌋. If p > 0, go back to M2.
 
-NB: I have modified this algorithm slightly.  In step M4 I compare K_i & K_i+d,
-    not K_i+1 & K_i+d+1.  It seems to work!!
+NB: I have "modified" this algorithm slightly.  In step M4 I compare K_i & K_i+d,
+    not K_i+1 & K_i+d+1 due to 0-based indexing

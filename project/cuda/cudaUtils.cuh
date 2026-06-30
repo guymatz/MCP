@@ -13,6 +13,8 @@
 
 #include "../utils.hpp"
 
+#define SHARED_MEM_MAX_ITEMS 1024
+
 using namespace std;
 
 bool verify(std::vector<int> &V, int n, bool verbose = false) {
