@@ -10,14 +10,16 @@
 #include <string>
 #include <vector>
 
-#include "serialUtils.hpp"
+#include "omp.h"
+
+#include "parallelUtils.hpp"
 
 using namespace std;
 
 void compex(vector<int> &Vnums, int origin, int partner) {
-    /* std::cout << "origin: " << origin << ", partner: " << partner << std::endl; */
-    if (Vnums[origin] > Vnums[partner]) {
-      // cout << "Swapping " << Vnums[origin] << "\t" <<  Vnums[partner] << std::endl;
+  if (Vnums[origin] > Vnums[partner]) {
+    // cout << "Swapping " << Vnums[origin] << "\t" <<  Vnums[partner] <<
+    // std::endl;
     std::swap(Vnums[origin], Vnums[partner]);
   }
 }
@@ -28,17 +30,24 @@ void compex(vector<int> &Vnums, int origin, int partner) {
  */
 void oddEvenMerge(vector<int> &Vnums, int lo, int n, int r) {
     int m=r*2;
-    std::cout << "lo: " << lo << " + r: " << r << " = lo+r: " << lo+r <<  std::endl;
-    std::cout <<  std::endl;
+    /* std::cout << "oddEvenMerge - lo: " << lo << ", n: " << n << ", r: " << r << ", m:" << m << std::endl; */
     if (m<n)
     {
         oddEvenMerge(Vnums, lo, n, m);      // even subsequence
         oddEvenMerge(Vnums, lo+r, n, m);    // odd subsequence
-        for (int i=lo+r; i+r<lo+n; i+=m) {
+        int ORIGIN = lo+r;
+        int UPPER_BOUND = lo + n;
+        int LOWER_BOUND = ORIGIN + r;
+        //for (int i=lo+r; i+r<lo+n; i+=m) // Original loop
+        #pragma omp parallel for
+        for (int i=ORIGIN; LOWER_BOUND < UPPER_BOUND; i+=m) {
+            std::cout << "start: " << i << ", i+r: " << i+r << ", UPPER_BOUND: " << UPPER_BOUND  << std::endl;
             compex(Vnums, i, i+r);
+            LOWER_BOUND = i + r;
         }
     }
     else {
+        /* std::cout << "Comparing: " << Vnums[lo] << " at pos " << lo << " - to - " << Vnums[lo+r] << " at pos " << lo+r << std::endl; */
         compex(Vnums, lo, lo+r);
     }
 }
@@ -47,10 +56,12 @@ void oddEvenMerge(vector<int> &Vnums, int lo, int n, int r) {
  *  starting at position lo
  */
 void oddEvenMergeSort(vector<int> &Vnums, int lo, int n) {
+    /* std::cout << "***** oddEvenMergeSort - lo: " << lo << ", n: " << n << std::endl; */
     if (n>1) {
         int m=n/2;
         oddEvenMergeSort(Vnums, lo, m);
         oddEvenMergeSort(Vnums, lo+m, m);
+        /* std::cout << "Calling oddEvenMerge - lo: " << lo << ", n: " << n << std::endl; */
         oddEvenMerge(Vnums, lo, n, 1);
     }
 }
@@ -79,10 +90,7 @@ int main(int argc, char *argv[]) {
 
   struct timespec start_time, end_time;
   clock_gettime(CLOCK_MONOTONIC, &start_time);
-
-  
   sort(Vnums);
-
   clock_gettime(CLOCK_MONOTONIC, &end_time);
 
   struct timespec start_time_verify, end_time_verify;
@@ -95,11 +103,9 @@ int main(int argc, char *argv[]) {
   /* printf("Batcher O/E Verification time: %.6f seconds\n",
    * get_elapsed_time(start_time_verify, end_time_verify)); */
 
-  // cout << "AFTER sort . . .\n";
-  /*
-  for (int i = 0; i < n; i++) {
-      cout << pprint(Vnums[i]) << std::endl;
+  cout << "AFTER sort . . .\n";
+  for (int i = 0; i < N; i++) {
+      /* cout << pprint(Vnums[i]) << std::endl; */
   }
-  */
   printf("batcher-odd-even-merge-sort, %i, %i, %.6f\n", t, N, get_elapsed_time(start_time, end_time));
 }
