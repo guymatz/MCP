@@ -16,8 +16,7 @@ __global__ void sortKernelWithSharedMemory(int *d_V, int subArraySize, int dista
     // set up shared memory
     __shared__ int sm[SHARED_MEM_MAX_ITEMS];
     // only copy over the first time this is called, when subArraySize = 2, and distance = 1
-    if (subArraySize == 2 && distance == 1)
-    {
+    if (subArraySize == 2 && distance == 1) {
         /* printf("Copying idx: %i\n", idx); */
         sm[idx] = d_V[idx];
     }
@@ -31,17 +30,16 @@ __global__ void sortKernelWithSharedMemory(int *d_V, int subArraySize, int dista
         return;
 
     // printf("%i\n", idx);
-    /* printf("Comparing: %i <> %i : at %i - %i\n", d_V[idx], d_V[swapPartner], idx, swapPartner); */
-    if ((idx & subArraySize) == 0 && sm[idx] > sm[swapPartner])
-    {
+    /* printf("Comparing: %i <> %i : at %i - %i\n", d_V[idx], d_V[swapPartner], idx, swapPartner);
+     */
+    if ((idx & subArraySize) == 0 && sm[idx] > sm[swapPartner]) {
         // swap does not exist in CUDA :-(
         // swap(d_V[idx], d_V[swapPartner]);
         int tmp = sm[idx];
         sm[idx] = sm[swapPartner];
         sm[swapPartner] = tmp;
     }
-    if ((idx & subArraySize) != 0 && sm[idx] < sm[swapPartner])
-    {
+    if ((idx & subArraySize) != 0 && sm[idx] < sm[swapPartner]) {
         // swap does not exist in CUDA :-(
         // swap(d_V[swapPartner], d_V[idx]);
         int tmp = sm[idx];
@@ -50,17 +48,13 @@ __global__ void sortKernelWithSharedMemory(int *d_V, int subArraySize, int dista
     }
     //  We are now done with being able to use shared memory
     /* printf("HERE idx: %i, sAS: %i, dist: %i\n", idx, subArraySize, distance); */
-    if (threadIdx.x == 0 && subArraySize == N && distance == 1)
-    {
+    if (threadIdx.x == 0 && subArraySize == N && distance == 1) {
         __syncthreads();
-        for (int i = 0; i < N; i++)
-        {
+        for (int i = 0; i < N; i++) {
             /* printf("Copying idx: %i - %i\n", i, sm[i]); */
             d_V[i] = sm[i];
         }
-    }
-    else if (subArraySize == 1)
-    {
+    } else if (subArraySize == 1) {
         __syncthreads();
     }
 }
@@ -78,16 +72,14 @@ __global__ void sortKernel(int *d_V, int subArraySize, int distance, int N) {
 
     // printf("%i\n", idx);
 
-    if ((idx & subArraySize) == 0 && d_V[idx] > d_V[swapPartner])
-    {
+    if ((idx & subArraySize) == 0 && d_V[idx] > d_V[swapPartner]) {
         // swap does not exist in CUDA :-(
         // swap(d_V[idx], d_V[swapPartner]);
         int tmp = d_V[idx];
         d_V[idx] = d_V[swapPartner];
         d_V[swapPartner] = tmp;
     }
-    if ((idx & subArraySize) != 0 && d_V[idx] < d_V[swapPartner])
-    {
+    if ((idx & subArraySize) != 0 && d_V[idx] < d_V[swapPartner]) {
         // swap does not exist in CUDA :-(
         // swap(d_V[swapPartner], d_V[idx]);
         int tmp = d_V[idx];
@@ -106,7 +98,8 @@ int main(int argc, char *argv[]) {
     // std::endl;
     std::vector<int> h_V(n);
 
-    struct timespec start_time, end_time, load_time, sort_time, copy_to_device_time, copy_to_host_time;
+    struct timespec start_time, end_time, load_time, sort_time, copy_to_device_time,
+        copy_to_host_time;
     struct timespec start_kernel_time, end_kernel_time;
     /* cout << "Populating Vector . . . " << std::endl; */
     clock_gettime(CLOCK_MONOTONIC, &start_time);
@@ -124,14 +117,6 @@ int main(int argc, char *argv[]) {
     // Size in bytes for the ROWS x COLS matrix
     int size = n * sizeof(int);
 
-    // Vector before
-    for (int i = 0; i < n; i++)
-    {
-        /* cout << pprint(h_V[i]) << std::endl; */
-    }
-
-    /* cout << "Copying data to GPU . . ." << std::endl; */
-
     // Device memory allocation
     int mtc = getMaxThreads();
     int blocks = ceil((float)n / mtc);
@@ -141,73 +126,45 @@ int main(int argc, char *argv[]) {
     // Copy vector from host to device
     checkCuda(cudaMemcpy(d_V, &(h_V[0]), size, cudaMemcpyHostToDevice));
     clock_gettime(CLOCK_MONOTONIC, &copy_to_device_time);
-    /* cout << "Copy Out Time: " << get_elapsed_time(load_time,
-     * copy_to_device_time) << std::endl; */
 
     int distance, subArraySize;
-    /* printf("subArraySize\tdistance\tidx\tswapPartner\n"); */
-    // We loop through "sub arrays" of the original vector, 2 elements, then
-    // 4 , then 8 . . .
-    for (subArraySize = 2; subArraySize <= n; subArraySize = subArraySize * 2)
-    {
+    // We loop through "sub arrays" of the original vector, 2 elements, then 4 , then 8 . . .
+    for (subArraySize = 2; subArraySize <= n; subArraySize = subArraySize * 2) {
         // we break the problem into "sub array" halves
-        for (distance = subArraySize / 2; distance > 0; distance = distance / 2)
-        {
-            /* cout << "Before: " << subArraySize << " " << distance << std::endl; */
+        for (distance = subArraySize / 2; distance > 0; distance = distance / 2) {
             clock_gettime(CLOCK_MONOTONIC, &start_kernel_time);
-            if (n <= mtc)
-            {
-                /* std::cout << "SHARED - SubArraySize: " << subArraySize << ", Distance: " << distance << ", n: " << n << ", mtc: " << mtc << std::endl; */
+            if (n <= mtc) {
                 sortKernelWithSharedMemory<<<blocks, mtc>>>(d_V, subArraySize, distance, n);
-            }
-            else
-            {
-                /* std::cout << "regular - SubArraySize: " << subArraySize << ", Distance: " << distance << ", n: " << n << std::endl;*/ 
+            } else {
                 sortKernel<<<blocks, mtc>>>(d_V, subArraySize, distance, n);
             }
             clock_gettime(CLOCK_MONOTONIC, &end_kernel_time);
-            /* printf("\t\t%.6f\n", get_elapsed_time(start_kernel_time,
-             * end_kernel_time)); */
-            // cout << "After: " << subArraySize << " " << distance << std::endl;
         }
-        /* std::cout << "Done with subArraySize = " << subArraySize << std::endl; */
     }
     cudaDeviceSynchronize();
     clock_gettime(CLOCK_MONOTONIC, &sort_time);
-    /* cout << "Sort Time: " << get_elapsed_time(copy_to_device_time, sort_time)
-     * << std::endl; */
 
-    // cout << "Before: " << sizeof(h_V) << " " << sizeof(d_V) << " " << size <<
-    // std::endl;
-    /* cout << "Copy In . . . " << std::endl; */
     checkCuda(cudaMemcpy(&(h_V[0]), d_V, size, cudaMemcpyDeviceToHost));
     clock_gettime(CLOCK_MONOTONIC, &copy_to_host_time);
-    /* cout << "Copy In Time: " << get_elapsed_time(sort_time, copy_to_host_time)
-     * << std::endl; */
 
     clock_gettime(CLOCK_MONOTONIC, &end_time);
 
-    if (N <= 3)
-    {
+    if (N <= 3) {
         cout << "***** AFTER sort . . .\n";
-        for (int i = 0; i < n; i++)
-        {
+        for (int i = 0; i < n; i++) {
             cout << pprint(h_V[i]) << std::endl;
         }
     }
 
     struct timespec start_time_verify, end_time_verify;
     clock_gettime(CLOCK_MONOTONIC, &start_time_verify);
-    if (!verify(h_V, n))
-    {
+    if (!verify(h_V, n)) {
         printf("oopsy\n");
         return 1;
     }
     clock_gettime(CLOCK_MONOTONIC, &end_time_verify);
-    /* printf("Bitonic Verification time: %.6f seconds\n",
-     * get_elapsed_time(start_time_verify, end_time_verify)); */
 
-    printf("bitonic-shared, %i, %zu, %.6f\n", N, n, get_elapsed_time(start_time, end_time));
+    printf("bitonic-shared, %i, %zu, %.6f\n", N, n, get_elapsed_time(copy_to_host_time, sort_time));
 
     cudaFree(d_V);
     //  No need to free a vector - https://stackoverflow.com/a/3054584/2623252
