@@ -15,110 +15,90 @@
 using namespace std;
 
 __global__ void printKernel(int *V, int n) {
-  int idx = blockIdx.x * blockDim.x + threadIdx.x;
+    int idx = blockIdx.x * blockDim.x + threadIdx.x;
 
-  if (idx == 0) {
-    for (int i = 0; i < n; i++) {
-      /* printf("%i - %i\n", i, V[i]); */
+    if (idx == 0) {
+        for (int i = 0; i < n; i++) {
+            printf("%i - %i\n", i, V[i]);
+        }
     }
-  }
 }
 
 __device__ void compex(int *V, int origin, int partner) {
-  if (V[origin] > V[partner]) {
-    int temp = V[origin];
-    V[origin] = V[partner];
-    V[partner] = temp;
-  }
+    if (V[origin] > V[partner]) {
+        int temp = V[origin];
+        V[origin] = V[partner];
+        V[partner] = temp;
+    }
 }
 
 __global__ void sortKernel(int *Vnums, int N, int d, int p, int r) {
-  int idx = blockIdx.x * blockDim.x + threadIdx.x;
+    int idx = blockIdx.x * blockDim.x + threadIdx.x;
 
-  if (idx < (N - d)) {
-    int ORIGIN_idx = idx;
-    int PARTNER_idx = ORIGIN_idx + d;
-    if ((ORIGIN_idx & p) == r) {
-      // cout << "***\t" << origin  << "\t"  << partner << "\t" << (i & p) <<
-      // "\t" << r << std::endl;
-      compex(Vnums, ORIGIN_idx, PARTNER_idx);
+    if (idx < (N - d)) {
+        int ORIGIN_idx = idx;
+        int PARTNER_idx = ORIGIN_idx + d;
+        if ((ORIGIN_idx & p) == r) {
+            compex(Vnums, ORIGIN_idx, PARTNER_idx);
+        }
     }
-  }
 }
 
 int main(int argc, char *argv[]) {
-  struct timespec start_time, end_time, load_time, sort_time, copy_to_device_time,
-      copy_to_host_time, start_time_verify, end_time_verify;
-  clock_gettime(CLOCK_MONOTONIC, &start_time);
+    struct timespec start_time, end_time, load_time, sort_time, copy_to_device_time,
+        copy_to_host_time, start_time_verify, end_time_verify;
+    clock_gettime(CLOCK_MONOTONIC, &start_time);
 
-  //  These var names make sense when you look at the README
-  int t = 4;
-  if (argc == 2)
-    t = stoi(argv[1]);
-  int N = pow(2, t);
+    //  These var names make sense when you look at the README
+    int t = 4;
+    if (argc == 2)
+        t = stoi(argv[1]);
+    int N = pow(2, t);
 
-  std::vector<int> Vnums(N);
-  populate_vector(Vnums, N);
-  clock_gettime(CLOCK_MONOTONIC, &load_time);
-  // Size in bytes for the ROWS x COLS matrix
-  int size = N * sizeof(int);
+    std::vector<int> Vnums(N);
+    populate_vector(Vnums, N);
+    clock_gettime(CLOCK_MONOTONIC, &load_time);
+    // Size in bytes for the ROWS x COLS matrix
+    int size = N * sizeof(int);
 
-  for (int i = 0; i < N; i++) {
-    // cout << i << " " << pprint(Vnums[i]) << std::endl;
-  }
+    // Device memory allocation
+    int threads = getMaxThreads();
+    int blocks = ceil((float)N / threads);
+    int *d_V;
+    cudaMalloc((void **)&d_V, size);
 
-  /* cout << "Copying data to GPU . . ." << std::endl; */
-  // Device memory allocation
-  int threads = getMaxThreads();
-  int blocks = ceil((float)N / threads);
-  int *d_V;
-  cudaMalloc((void **)&d_V, size);
+    // Copy vector from host to device
+    checkCuda(cudaMemcpy(d_V, &(Vnums[0]), size, cudaMemcpyHostToDevice));
+    clock_gettime(CLOCK_MONOTONIC, &copy_to_device_time);
 
-  // Copy vector from host to device
-  checkCuda(cudaMemcpy(d_V, &(Vnums[0]), size, cudaMemcpyHostToDevice));
-  clock_gettime(CLOCK_MONOTONIC, &copy_to_device_time);
-  /* cout << "Copy Out Time: " << get_elapsed_time(load_time,
-   * copy_to_device_time) << std::endl; */
-
-  // See Knuth - Art of Computing Volume 3, p. 112
-  // Again, bad var names, but see README
-  int r, d;
-  for (int p = pow(2, t - 1); p > 0; p = p / 2) {
-    /* cout << p << "\t" << N << "\t" << t << "\t"  << std::endl; */
-    r = 0;
-    d = p;
-    for (int q = pow(2, t - 1); p <= q; q = q / 2) {
-      // cout << p << "\t" << q << "\t" << r << "\t"  << d << std::endl;
-      sortKernel<<<blocks, threads>>>(d_V, N, d, p, r);
-      if (q != p) {
-        d = q - p;
-      }
-      r = p;
+    // See Knuth - Art of Computing Volume 3, p. 112
+    // Again, bad var names, but see README
+    int r, d;
+    for (int p = pow(2, t - 1); p > 0; p = p / 2) {
+        r = 0;
+        d = p;
+        for (int q = pow(2, t - 1); p <= q; q = q / 2) {
+            sortKernel<<<blocks, threads>>>(d_V, N, d, p, r);
+            if (q != p) {
+                d = q - p;
+            }
+            r = p;
+        }
     }
-  }
-  clock_gettime(CLOCK_MONOTONIC, &sort_time);
+    clock_gettime(CLOCK_MONOTONIC, &sort_time);
 
-  // Copy vector from device to host
-  checkCuda(cudaMemcpy(&(Vnums[0]), d_V, size, cudaMemcpyDeviceToHost));
-  clock_gettime(CLOCK_MONOTONIC, &copy_to_host_time);
-  /* cout << "Copy In Time: " << get_elapsed_time(sort_time, copy_to_host_time)
-   * << std::endl; */
+    // Copy vector from device to host
+    checkCuda(cudaMemcpy(&(Vnums[0]), d_V, size, cudaMemcpyDeviceToHost));
+    clock_gettime(CLOCK_MONOTONIC, &copy_to_host_time);
 
-  /* cout << "AFTER sort . . .\n"; */
-  for (int i = 0; i < N; i++) {
-    // cout << pprint(Vnums[i]) << std::endl;
-  }
+    clock_gettime(CLOCK_MONOTONIC, &start_time_verify);
+    if (!verify(Vnums, N, false)) {
+        printf("oopsy\n");
+        return 1;
+    }
+    clock_gettime(CLOCK_MONOTONIC, &end_time_verify);
 
-  clock_gettime(CLOCK_MONOTONIC, &start_time_verify);
-  if (!verify(Vnums, N, false)) {
-    printf("oopsy\n");
-    return 1;
-  }
-  clock_gettime(CLOCK_MONOTONIC, &end_time_verify);
-  /* printf("Batcher-O/E Verification time: %.6f seconds\n",
-   * get_elapsed_time(start_time_verify, end_time_verify)); */
+    clock_gettime(CLOCK_MONOTONIC, &end_time);
 
-  clock_gettime(CLOCK_MONOTONIC, &end_time);
-
-  printf("batcher, %i, %i, %.6f\n", t, N, get_elapsed_time(start_time, end_time));
+    printf("batcher, %i, %i, %.6f\n", t, N, get_elapsed_time(copy_to_device_time, sort_time));
 }

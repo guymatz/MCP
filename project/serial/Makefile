@@ -4,6 +4,7 @@ NVCC ?= nvcc
 GCC ?= g++
 #NVCCFLAGS ?= -O2 -std=c++14
 NVCCFLAGS ?= -g -Werror all-warnings
+# GCCFLAGS ?= -I../../src/3rd-party/plog/include -Wall -std=c++17 #-g 
 GCCFLAGS ?= -Wall -std=c++17 #-g 
 LDFLAGS ?= #-lbenchmark
 
@@ -33,7 +34,7 @@ clean:
 
 help:
 	@echo "Usage:"
-	@echo "  make        Build all CUDA executables (produces files with no extension)"
-	@echo "  make exe    Build specific executable 'exe' from 'exe.cu'"
+	@echo "  make        Build all CUDA executables (produces files with .x extension)"
+	@echo "  make exe.x  Build specific executable 'exe.x' from 'exe.cu'"
 	@echo "  make -jN    Parallel build"
 	@echo "  make clean  Remove built executables"
