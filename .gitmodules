@@ -1,3 +1,0 @@
-[submodule "src/3rd-party/plog"]
-	path = src/3rd-party/plog
-	url = https://github.com/SergiusTheBest/plog.git
