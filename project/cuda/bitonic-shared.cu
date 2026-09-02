@@ -164,7 +164,7 @@ int main(int argc, char *argv[]) {
     }
     clock_gettime(CLOCK_MONOTONIC, &end_time_verify);
 
-    printf("bitonic-shared, %i, %zu, %.6f\n", N, n, get_elapsed_time(copy_to_host_time, sort_time));
+    printf("bitonic-shared, %i, %zu, %.6f\n", N, n, get_elapsed_time(copy_to_device_time, sort_time));
 
     cudaFree(d_V);
     //  No need to free a vector - https://stackoverflow.com/a/3054584/2623252
