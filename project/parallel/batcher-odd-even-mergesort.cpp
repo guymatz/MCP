@@ -33,14 +33,11 @@ void oddEvenMerge(vector<int> &Vnums, int lo, int n, int r) {
         oddEvenMerge(Vnums, lo + r, n, m); // odd subsequence
         int ORIGIN = lo + r;
         int UPPER_BOUND = lo + n;
-        int LOWER_BOUND = ORIGIN + r;
+        int LOOP_LIMIT = UPPER_BOUND - r;
 
         #pragma omp parallel for
-        for (int i = ORIGIN; LOWER_BOUND < UPPER_BOUND; i += m) {
-            std::cout << "start: " << i << ", i+r: " << i + r << ", UPPER_BOUND: " << UPPER_BOUND
-                      << std::endl;
+        for (int i = ORIGIN; i < LOOP_LIMIT; i += m) {
             compex(Vnums, i, i + r);
-            LOWER_BOUND = i + r;
         }
     } else {
         compex(Vnums, lo, lo + r);
