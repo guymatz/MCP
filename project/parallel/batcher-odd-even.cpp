@@ -62,5 +62,5 @@ int main(int argc, char *argv[]) {
     }
     clock_gettime(CLOCK_MONOTONIC, &end_time_verify);
 
-    printf("batcher, %i, %i, %.6f\n", N, n, get_elapsed_time(start_time, end_time));
+    printf("parallel, batcher, %i, %i, %.6f\n", N, n, get_elapsed_time(start_time, end_time));
 }

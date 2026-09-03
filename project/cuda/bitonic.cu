@@ -93,7 +93,7 @@ int main(int argc, char *argv[]) {
     }
     clock_gettime(CLOCK_MONOTONIC, &end_time_verify);
 
-    printf("bitonic, %i, %zu, %.6f\n", N, n, get_elapsed_time(copy_to_device_time, sort_time));
+    printf("cuda, bitonic, %i, %zu, %.6f\n", N, n, get_elapsed_time(copy_to_device_time, sort_time));
 
     cudaFree(d_V);
     h_V.clear();
