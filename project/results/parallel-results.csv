@@ -1,8 +1,18 @@
-batcher, 10, 1024, 0.000956
-batcher, 15, 32768, 0.034910
-batcher, 20, 1048576, 1.887985
-batcher, 22, 4194304, 9.076909
-bitonic, 10, 1024,  0.001409
-bitonic, 15, 32768,  0.037401
-bitonic, 20, 1048576,  2.032271
-bitonic, 22, 4194304,  9.760433
+parallel, batcher-odd-even-merge-sort, 5, 32, 0.000376
+parallel, batcher-odd-even-merge-sort, 10, 1024, 0.009413
+parallel, batcher-odd-even-merge-sort, 15, 32768, 0.465467
+parallel, batcher-odd-even-merge-sort, 20, 1048576, 21.361738
+parallel, batcher-odd-even-merge-sort, 21, 2097152, 45.930246
+parallel, batcher-odd-even-merge-sort, 22, 4194304, 98.809171
+parallel, batcher, 5, 32, 0.000295
+parallel, batcher, 10, 1024, 0.001009
+parallel, batcher, 15, 32768, 0.034979
+parallel, batcher, 20, 1048576, 1.886006
+parallel, batcher, 21, 2097152, 4.187204
+parallel, batcher, 22, 4194304, 9.091905
+parallel, bitonic, 5, 32,  0.000277
+parallel, bitonic, 10, 1024,  0.000915
+parallel, bitonic, 15, 32768,  0.037217
+parallel, bitonic, 20, 1048576,  2.039768
+parallel, bitonic, 21, 2097152,  4.478399
+parallel, bitonic, 22, 4194304,  9.786931

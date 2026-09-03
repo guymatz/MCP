@@ -141,5 +141,5 @@ int main(int argc, char *argv[]) {
 
     clock_gettime(CLOCK_MONOTONIC, &end_time);
 
-    printf("cuda, batcher, %i, %i, %.6f\n", t, N, get_elapsed_time(copy_to_device_time, sort_time));
+    printf("cuda, batcher-shared, %i, %i, %.6f\n", t, N, get_elapsed_time(copy_to_device_time, sort_time));
 }

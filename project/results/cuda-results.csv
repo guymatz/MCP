@@ -1,8 +1,24 @@
-batcher, 10, 1024, 0.331087
-batcher, 15, 32768, 0.295400
-batcher, 20, 1048576, 1.962053
-batcher, 22, 4194304, 7.904796
-bitonic, 10, 1024, 0.106983
-bitonic, 15, 32768, 0.234257
-bitonic, 20, 1048576, 2.236271
-bitonic, 22, 4194304, 9.615923
+cuda, batcher-shared, 5, 32, 0.000406
+cuda, batcher-shared, 10, 1024, 0.001676
+cuda, batcher-shared, 15, 32768, 0.002935
+cuda, batcher-shared, 20, 1048576, 0.005085
+cuda, batcher-shared, 21, 2097152, 0.005490
+cuda, batcher-shared, 22, 4194304, 0.006253
+cuda, batcher, 5, 32, 0.000398
+cuda, batcher, 10, 1024, 0.001324
+cuda, batcher, 15, 32768, 0.003028
+cuda, batcher, 20, 1048576, 0.005013
+cuda, batcher, 21, 2097152, 0.005543
+cuda, batcher, 22, 4194304, 0.007981
+cuda, bitonic-shared, 5, 32, 0.002835
+cuda, bitonic-shared, 10, 1024, 0.023234
+cuda, bitonic-shared, 15, 32768, 0.204969
+cuda, bitonic-shared, 20, 1048576, 2.027925
+cuda, bitonic-shared, 21, 2097152, 4.066826
+cuda, bitonic-shared, 22, 4194304, 8.236179
+cuda, bitonic, 5, 32, 0.001914
+cuda, bitonic, 10, 1024, 0.009239
+cuda, bitonic, 15, 32768, 0.132453
+cuda, bitonic, 20, 1048576, 1.775900
+cuda, bitonic, 21, 2097152, 3.861978
+cuda, bitonic, 22, 4194304, 8.308255

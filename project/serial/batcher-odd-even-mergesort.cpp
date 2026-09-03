@@ -26,8 +26,7 @@ void compex(vector<int> &Vnums, int origin, int partner) {
  */
 void oddEvenMerge(vector<int> &Vnums, int lo, int n, int r) {
     int m = r * 2;
-    std::cout << "lo: " << lo << " + r: " << r << " = lo+r: " << lo + r << std::endl;
-    std::cout << std::endl;
+
     if (m < n) {
         oddEvenMerge(Vnums, lo, n, m);     // even subsequence
         oddEvenMerge(Vnums, lo + r, n, m); // odd subsequence

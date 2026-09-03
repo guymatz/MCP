@@ -21,7 +21,6 @@ int main(int argc, char *argv[]) {
     if (argc == 2)
         N = stoi(argv[1]);
     int n = pow(2, N);
-    // printf("Working with a list of 2^%i (%i)\n", N, n);
     //  for ranges of loops
     int rp, rk;
     std::vector<int> Vnums(n);
