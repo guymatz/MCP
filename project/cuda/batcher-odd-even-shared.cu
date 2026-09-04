@@ -141,5 +141,7 @@ int main(int argc, char *argv[]) {
 
     clock_gettime(CLOCK_MONOTONIC, &end_time);
 
-    printf("cuda, batcher-shared, %i, %i, %.6f\n", t, N, get_elapsed_time(copy_to_device_time, sort_time));
+    std::cout << std::fixed << std::setprecision(10);
+    //  Computing time from the start of transfer to device to the end of transfer back to host
+    std::cout << "cuda, " <<  prog_name(argv[0]) << ", " <<  t << ", " <<  N << ", " << get_elapsed_time(load_time, copy_to_host_time) << std::endl;
 }

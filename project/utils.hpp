@@ -3,6 +3,8 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <filesystem>
+#include <iomanip>
 
 using namespace std;
 
@@ -65,4 +67,20 @@ string pprint(int i, string delim = "_") {
   if (s.length() > 0)
     news = s + news;
   return news;
+}
+
+std::string prog_name(const char* argv0) {
+    // 1. Guard against a null pointer or an empty string
+    if (argv0 == nullptr || argv0[0] == '\0') {
+        return "";
+    }
+    std::string path(argv0);
+
+    // 2. Find the last slash to isolate the filename (handles Windows '\' and Linux '/')
+    size_t last_slash = path.find_last_of("\\/");
+    std::string filename = (last_slash == std::string::npos) ? path : path.substr(last_slash + 1);
+
+    // 3. Find the last extension dot in the isolated filename
+    size_t last_dot = filename.find_last_of('.');
+    return (last_dot == std::string::npos) ? filename : filename.substr(0, last_dot);
 }

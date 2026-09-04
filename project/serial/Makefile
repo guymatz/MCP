@@ -5,7 +5,7 @@ GCC ?= g++
 #NVCCFLAGS ?= -O2 -std=c++14
 NVCCFLAGS ?= -g -Werror all-warnings
 # GCCFLAGS ?= -I../../src/3rd-party/plog/include -Wall -std=c++17 #-g 
-GCCFLAGS ?= -Wall -std=c++17 #-g 
+GCCFLAGS ?= -Wall -std=c++14 #-g 
 LDFLAGS ?= #-lbenchmark
 
 SRCS := $(wildcard *.cu)

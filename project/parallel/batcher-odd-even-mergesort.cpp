@@ -78,5 +78,6 @@ int main(int argc, char *argv[]) {
     }
     clock_gettime(CLOCK_MONOTONIC, &end_time_verify);
 
-    printf("parallel, batcher-odd-even-merge-sort, %i, %i, %.6f\n", t, N, get_elapsed_time(start_time, end_time));
+    std::cout << std::fixed << std::setprecision(10);
+    std::cout << "parallel, " <<  prog_name(argv[0]) << ", " <<  t << ", " <<  N << ", " << get_elapsed_time(start_time, end_time) << std::endl;
 }
