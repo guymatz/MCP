@@ -67,5 +67,5 @@ int main(int argc, char *argv[]) {
     clock_gettime(CLOCK_MONOTONIC, &end_time_verify);
 
     std::cout << std::fixed << std::setprecision(10);
-    std::cout << "parallel, " <<  prog_name(argv[0]) << ", " <<  n << ", " <<  N << ", " << get_elapsed_time(start_time, end_time) << std::endl;
+    std::cout << "parallel, " <<  prog_name(argv[0]) << ", " <<  n << ", " <<  N << ", " << get_elapsed_time(start_time, end_time) << ", " << std::getenv("OMP_NUM_THREADS") << std::endl;
 }

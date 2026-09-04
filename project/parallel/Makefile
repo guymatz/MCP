@@ -7,8 +7,6 @@ NVCCFLAGS ?= -g -Werror all-warnings
 GCCFLAGS ?= -Wall -std=c++17 #-g 
 LDFLAGS ?= -fopenmp -DAPPLE
 
-SRCS := $(wildcard *.cu)
-EXES := $(SRCS:.cu=.x)
 SRCS := $(SRCS) $(wildcard *.cpp)
 EXES := $(EXES) $(SRCS:.cpp=.x)
 $(info $(SRCS))
@@ -17,16 +15,12 @@ $(info $(EXES))
 .PHONY: all clean help
 all: $(EXES)
 ifeq ($(strip $(EXES)),)
-	@echo "No .cu files found."
+	@echo "No .cpp files found."
 endif
 
 # Pattern rule: build executable (no extension) from .cu source
 %.x: %.cpp
 	$(GCC) $(GCCFLAGS) $< -o $@ $(LDFLAGS)
-
-# Pattern rule: build executable (no extension) from .cu source
-%.x: %.cu
-	$(NVCC) $(NVCCFLAGS) $< -o $@ $(LDFLAGS)
 
 clean:
 	-@rm -f $(EXES) *.o *~ a.out

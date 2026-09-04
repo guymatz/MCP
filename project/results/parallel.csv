@@ -1,18 +1,95 @@
-parallel, batcher-odd-even-merge-sort, 5, 32, 0.000376
-parallel, batcher-odd-even-merge-sort, 10, 1024, 0.009413
-parallel, batcher-odd-even-merge-sort, 15, 32768, 0.465467
-parallel, batcher-odd-even-merge-sort, 20, 1048576, 21.361738
-parallel, batcher-odd-even-merge-sort, 21, 2097152, 45.930246
-parallel, batcher-odd-even-merge-sort, 22, 4194304, 98.809171
-parallel, batcher, 5, 32, 0.000295
-parallel, batcher, 10, 1024, 0.001009
-parallel, batcher, 15, 32768, 0.034979
-parallel, batcher, 20, 1048576, 1.886006
-parallel, batcher, 21, 2097152, 4.187204
-parallel, batcher, 22, 4194304, 9.091905
-parallel, bitonic, 5, 32,  0.000277
-parallel, bitonic, 10, 1024,  0.000915
-parallel, bitonic, 15, 32768,  0.037217
-parallel, bitonic, 20, 1048576,  2.039768
-parallel, bitonic, 21, 2097152,  4.478399
-parallel, bitonic, 22, 4194304,  9.786931
+parallel, batcher-odd-even-mergesort, 10, 1024, 0.0062946020, 1
+parallel, batcher-odd-even-mergesort, 15, 32768, 0.3129624860, 1
+parallel, batcher-odd-even-mergesort, 20, 1048576, 15.7944697700, 1
+parallel, batcher-odd-even-mergesort, 21, 2097152, 35.6736452200, 1
+parallel, batcher-odd-even-mergesort, 22, 4194304, 79.0884538380, 1
+parallel, batcher-odd-even, 1024, 10, 0.0019299140, 1
+parallel, batcher-odd-even, 32768, 15, 0.1284636140, 1
+parallel, batcher-odd-even, 1048576, 20, 7.2389272670, 1
+parallel, batcher-odd-even, 2097152, 21, 15.9459190320, 1
+parallel, batcher-odd-even, 4194304, 22, 34.8089805880, 1
+parallel, bitonic, 1024, 10, 0.0020964830, 1
+parallel, bitonic, 32768, 15, 0.1390915050, 1
+parallel, bitonic, 1048576, 20, 7.7393038010, 1
+parallel, bitonic, 2097152, 21, 17.0324696380, 1
+parallel, bitonic, 4194304, 22, 37.2111502370, 1
+parallel, batcher-odd-even-mergesort, 10, 1024, 0.0086643420, 2
+parallel, batcher-odd-even-mergesort, 15, 32768, 0.4656391280, 2
+parallel, batcher-odd-even-mergesort, 20, 1048576, 21.3428993010, 2
+parallel, batcher-odd-even-mergesort, 21, 2097152, 47.7385158090, 2
+parallel, batcher-odd-even-mergesort, 22, 4194304, 101.2259135860, 2
+parallel, batcher-odd-even, 1024, 10, 0.0012924200, 2
+parallel, batcher-odd-even, 32768, 15, 0.0662166110, 2
+parallel, batcher-odd-even, 1048576, 20, 3.6521080280, 2
+parallel, batcher-odd-even, 2097152, 21, 8.1238712480, 2
+parallel, batcher-odd-even, 4194304, 22, 17.6265381830, 2
+parallel, bitonic, 1024, 10, 0.0013248690, 2
+parallel, bitonic, 32768, 15, 0.0698937670, 2
+parallel, bitonic, 1048576, 20, 3.9011622220, 2
+parallel, bitonic, 2097152, 21, 8.5899161620, 2
+parallel, bitonic, 4194304, 22, 18.7791741690, 2
+parallel, batcher-odd-even-mergesort, 10, 1024, 0.0093680550, 3
+parallel, batcher-odd-even-mergesort, 15, 32768, 0.4607479250, 3
+parallel, batcher-odd-even-mergesort, 20, 1048576, 20.6708352200, 3
+parallel, batcher-odd-even-mergesort, 21, 2097152, 45.7029599860, 3
+parallel, batcher-odd-even-mergesort, 22, 4194304, 99.5788031940, 3
+parallel, batcher-odd-even, 1024, 10, 0.0010393990, 3
+parallel, batcher-odd-even, 32768, 15, 0.0457734010, 3
+parallel, batcher-odd-even, 1048576, 20, 2.4798882900, 3
+parallel, batcher-odd-even, 2097152, 21, 5.5230784070, 3
+parallel, batcher-odd-even, 4194304, 22, 11.9784464660, 3
+parallel, bitonic, 1024, 10, 0.0010992970, 3
+parallel, bitonic, 32768, 15, 0.0488409370, 3
+parallel, bitonic, 1048576, 20, 2.6372175650, 3
+parallel, bitonic, 2097152, 21, 5.8061250240, 3
+parallel, bitonic, 4194304, 22, 12.6298979720, 3
+parallel, batcher-odd-even-mergesort, 10, 1024, 0.0095397580, 4
+parallel, batcher-odd-even-mergesort, 15, 32768, 0.4589782750, 4
+parallel, batcher-odd-even-mergesort, 20, 1048576, 20.9646870610, 4
+parallel, batcher-odd-even-mergesort, 21, 2097152, 45.4117842400, 4
+parallel, batcher-odd-even-mergesort, 22, 4194304, 98.7565602410, 4
+parallel, batcher-odd-even, 1024, 10, 0.0009113770, 4
+parallel, batcher-odd-even, 32768, 15, 0.0349796960, 4
+parallel, batcher-odd-even, 1048576, 20, 1.8809468870, 4
+parallel, batcher-odd-even, 2097152, 21, 4.1947729170, 4
+parallel, batcher-odd-even, 4194304, 22, 9.1135636140, 4
+parallel, bitonic, 1024, 10, 0.0008951790, 4
+parallel, bitonic, 32768, 15, 0.0363669250, 4
+parallel, bitonic, 1048576, 20, 1.9911128410, 4
+parallel, bitonic, 2097152, 21, 4.3968304920, 4
+parallel, bitonic, 4194304, 22, 9.6149933660, 4
+parallel, batcher-odd-even-mergesort, 10, 1024, 0.1456578390, 6
+parallel, batcher-odd-even-mergesort, 15, 32768, 7.8649408940, 6
+parallel, batcher-odd-even-mergesort, 20, 1048576, 347.0094719610, 6
+parallel, batcher-odd-even-mergesort, 21, 2097152, 744.0418618690, 6
+parallel, batcher-odd-even-mergesort, 22, 4194304, 1562.5603819910, 6
+parallel, batcher-odd-even, 1024, 10, 0.0032447450, 6
+parallel, batcher-odd-even, 32768, 15, 0.0519357720, 6
+parallel, batcher-odd-even, 1048576, 20, 2.5349717280, 6
+parallel, batcher-odd-even, 2097152, 21, 5.3085740410, 6
+parallel, batcher-odd-even, 4194304, 22, 9.8809905270, 6
+parallel, bitonic, 1024, 10, 0.0036589260, 6
+parallel, bitonic, 32768, 15, 0.0560028330, 6
+parallel, bitonic, 1048576, 20, 2.6625252440, 6
+parallel, bitonic, 2097152, 21, 5.5699528860, 6
+parallel, bitonic, 4194304, 22, 10.2649938130, 6
+parallel, batcher-odd-even-mergesort, 10, 1024, 0.1906855100, 8
+parallel, batcher-odd-even-mergesort, 15, 32768, 10.1592115140, 8
+parallel, batcher-odd-even-mergesort, 20, 1048576, 442.2562231560, 8
+parallel, batcher-odd-even-mergesort, 21, 2097152, 932.8458811180, 8
+parallel, batcher-odd-even-mergesort, 22, 4194304, 1980.7537318710, 8
+parallel, batcher-odd-even, 1024, 10, 0.0038678720, 8
+parallel, batcher-odd-even, 32768, 15, 0.0465957200, 8
+parallel, batcher-odd-even, 1048576, 20, 2.0961404490, 8
+parallel, batcher-odd-even, 2097152, 21, 4.4925170610, 8
+parallel, batcher-odd-even, 4194304, 22, 9.6184061230, 8
+parallel, bitonic, 1024, 10, 0.0043030460, 8
+parallel, bitonic, 32768, 15, 0.0491630620, 8
+parallel, bitonic, 1048576, 20, 2.1883938540, 8
+parallel, bitonic, 2097152, 21, 4.6617209470, 8
+parallel, bitonic, 4194304, 22, 10.1100217020, 8
+parallel, batcher-odd-even-mergesort, 10, 1024, 0.3341679510, 12
+parallel, batcher-odd-even-mergesort, 15, 32768, 17.4747827790, 12
+parallel, batcher-odd-even-mergesort, 20, 1048576, 771.2279532710, 12
+parallel, batcher-odd-even-mergesort, 21, 2097152, 1618.8826428270, 12
+parallel, batcher-odd-even-mergesort, 10, 1024, 0.3883654950, 12
