@@ -1,3 +1,4 @@
+implementation, algorithm, n, 2^n, time, threads
 parallel, batcher-odd-even-mergesort, 10, 1024, 0.0062946020, 1
 parallel, batcher-odd-even-mergesort, 15, 32768, 0.3129624860, 1
 parallel, batcher-odd-even-mergesort, 20, 1048576, 15.7944697700, 1
@@ -88,8 +89,3 @@ parallel, bitonic, 32768, 15, 0.0491630620, 8
 parallel, bitonic, 1048576, 20, 2.1883938540, 8
 parallel, bitonic, 2097152, 21, 4.6617209470, 8
 parallel, bitonic, 4194304, 22, 10.1100217020, 8
-parallel, batcher-odd-even-mergesort, 10, 1024, 0.3341679510, 12
-parallel, batcher-odd-even-mergesort, 15, 32768, 17.4747827790, 12
-parallel, batcher-odd-even-mergesort, 20, 1048576, 771.2279532710, 12
-parallel, batcher-odd-even-mergesort, 21, 2097152, 1618.8826428270, 12
-parallel, batcher-odd-even-mergesort, 10, 1024, 0.3883654950, 12

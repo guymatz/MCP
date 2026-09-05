@@ -1,56 +1,131 @@
-technolog, algorithm, n, 2^n, time
-cuda, batcher-odd-even-shared, 10, 1024, 0.1277844720
-cuda, batcher-odd-even-shared, 15, 32768, 0.2580474440
-cuda, batcher-odd-even-shared, 20, 1048576, 1.4583997430
-cuda, batcher-odd-even-shared, 21, 2097152, 2.3684557170
-cuda, batcher-odd-even-shared, 22, 4194304, 4.5144916290
-cuda, batcher-odd-even, 10, 1024, 0.0919891960
-cuda, batcher-odd-even, 15, 32768, 0.1847397130
-cuda, batcher-odd-even, 20, 1048576, 1.0983781780
-cuda, batcher-odd-even, 21, 2097152, 3.0617860510
-cuda, batcher-odd-even, 22, 4194304, 4.1457332630
-cuda, bitonic-shared, 1024, 10, 0.1046424840
-cuda, bitonic-shared, 32768, 15, 0.3302436470
-cuda, bitonic-shared, 1048576, 20, 2.0040850090
-cuda, bitonic-shared, 2097152, 21, 4.0398730190
-cuda, bitonic-shared, 4194304, 22, 8.3145554050
-cuda, bitonic, 1024, 10, 0.0982366470
-cuda, bitonic, 32768, 15, 0.2286578060
-cuda, bitonic, 1048576, 20, 1.9288178270
-cuda, bitonic, 2097152, 21, 4.5393653850
-cuda, bitonic, 4194304, 22, 8.6038559680
-parallel, batcher-odd-even-mergesort, 10, 1024, 0.0093659110
-parallel, batcher-odd-even-mergesort, 15, 32768, 0.4653382990
-parallel, batcher-odd-even-mergesort, 20, 1048576, 21.2156882860
-parallel, batcher-odd-even-mergesort, 21, 2097152, 45.9994623000
-parallel, batcher-odd-even-mergesort, 22, 4194304, 97.7724879830
-parallel, batcher-odd-even, 1024, 10, 0.0013528470
-parallel, batcher-odd-even, 32768, 15, 0.0351388020
-parallel, batcher-odd-even, 1048576, 20, 1.8883955120
-parallel, batcher-odd-even, 2097152, 21, 4.1991292790
-parallel, batcher-odd-even, 4194304, 22, 9.1066438150
-parallel, bitonic, 1024, 10, 0.0008817930
-parallel, bitonic, 32768, 15, 0.0362202360
-parallel, bitonic, 1048576, 20, 1.9842262960
-parallel, bitonic, 2097152, 21, 4.4021552060
-parallel, bitonic, 4194304, 22, 9.6049165000
-serial, batcher-odd-even-mergesort, 10, 1024, 0.0018569210
-serial, batcher-odd-even-mergesort, 15, 32768, 0.0877455580
-serial, batcher-odd-even-mergesort, 20, 1048576, 5.8115304030
-serial, batcher-odd-even-mergesort, 21, 2097152, 14.2268143990
-serial, batcher-odd-even-mergesort, 22, 4194304, 34.5576749920
-serial, batcher-odd-even, 10, 1024, 0.0011173200
-serial, batcher-odd-even, 15, 32768, 0.0827341390
-serial, batcher-odd-even, 20, 1048576, 4.7826189830
-serial, batcher-odd-even, 21, 2097152, 10.5510644370
-serial, batcher-odd-even, 22, 4194304, 23.2450754820
-serial, bitonic, 1024, 10, 0.0014234730
-serial, bitonic, 32768, 15, 0.0953940960
-serial, bitonic, 1048576, 20, 5.1806148380
-serial, bitonic, 2097152, 21, 11.4309737260
-serial, bitonic, 4194304, 22, 24.8999201510
-serial, stdSort, 1024, 10, 0.0004828770
-serial, stdSort, 32768, 15, 0.0210645880
-serial, stdSort, 1048576, 20, 0.9244615320
-serial, stdSort, 2097152, 21, 1.8499697640
-serial, stdSort, 4194304, 22, 3.8283758370
+implementation, algorithm, n, 2^n, time, threads
+cuda, batcher-odd-even-shared, 10, 1024, 0.1277844720, NA
+cuda, batcher-odd-even-shared, 15, 32768, 0.2580474440, NA
+cuda, batcher-odd-even-shared, 20, 1048576, 1.4583997430, NA
+cuda, batcher-odd-even-shared, 21, 2097152, 2.3684557170, NA
+cuda, batcher-odd-even-shared, 22, 4194304, 4.5144916290, NA
+cuda, batcher-odd-even, 10, 1024, 0.0919891960, NA
+cuda, batcher-odd-even, 15, 32768, 0.1847397130, NA
+cuda, batcher-odd-even, 20, 1048576, 1.0983781780, NA
+cuda, batcher-odd-even, 21, 2097152, 3.0617860510, NA
+cuda, batcher-odd-even, 22, 4194304, 4.1457332630, NA
+cuda, bitonic-shared, 1024, 10, 0.1046424840, NA
+cuda, bitonic-shared, 32768, 15, 0.3302436470, NA
+cuda, bitonic-shared, 1048576, 20, 2.0040850090, NA
+cuda, bitonic-shared, 2097152, 21, 4.0398730190, NA
+cuda, bitonic-shared, 4194304, 22, 8.3145554050, NA
+cuda, bitonic, 1024, 10, 0.0982366470, NA
+cuda, bitonic, 32768, 15, 0.2286578060, NA
+cuda, bitonic, 1048576, 20, 1.9288178270, NA
+cuda, bitonic, 2097152, 21, 4.5393653850, NA
+cuda, bitonic, 4194304, 22, 8.6038559680, NA
+serial, batcher-odd-even-mergesort, 10, 1024, 0.0018569210, NA
+serial, batcher-odd-even-mergesort, 15, 32768, 0.0877455580, NA
+serial, batcher-odd-even-mergesort, 20, 1048576, 5.8115304030, NA
+serial, batcher-odd-even-mergesort, 21, 2097152, 14.2268143990, NA
+serial, batcher-odd-even-mergesort, 22, 4194304, 34.5576749920, NA
+serial, batcher-odd-even, 10, 1024, 0.0011173200, NA
+serial, batcher-odd-even, 15, 32768, 0.0827341390, NA
+serial, batcher-odd-even, 20, 1048576, 4.7826189830, NA
+serial, batcher-odd-even, 21, 2097152, 10.5510644370, NA
+serial, batcher-odd-even, 22, 4194304, 23.2450754820, NA
+serial, bitonic, 1024, 10, 0.0014234730, NA
+serial, bitonic, 32768, 15, 0.0953940960, NA
+serial, bitonic, 1048576, 20, 5.1806148380, NA
+serial, bitonic, 2097152, 21, 11.4309737260, NA
+serial, bitonic, 4194304, 22, 24.8999201510, NA
+serial, stdSort, 1024, 10, 0.0004828770, NA
+serial, stdSort, 32768, 15, 0.0210645880, NA
+serial, stdSort, 1048576, 20, 0.9244615320, NA
+serial, stdSort, 2097152, 21, 1.8499697640, NA
+serial, stdSort, 4194304, 22, 3.8283758370, NA
+parallel, batcher-odd-even-mergesort, 10, 1024, 0.0062946020, 1
+parallel, batcher-odd-even-mergesort, 15, 32768, 0.3129624860, 1
+parallel, batcher-odd-even-mergesort, 20, 1048576, 15.7944697700, 1
+parallel, batcher-odd-even-mergesort, 21, 2097152, 35.6736452200, 1
+parallel, batcher-odd-even-mergesort, 22, 4194304, 79.0884538380, 1
+parallel, batcher-odd-even, 1024, 10, 0.0019299140, 1
+parallel, batcher-odd-even, 32768, 15, 0.1284636140, 1
+parallel, batcher-odd-even, 1048576, 20, 7.2389272670, 1
+parallel, batcher-odd-even, 2097152, 21, 15.9459190320, 1
+parallel, batcher-odd-even, 4194304, 22, 34.8089805880, 1
+parallel, bitonic, 1024, 10, 0.0020964830, 1
+parallel, bitonic, 32768, 15, 0.1390915050, 1
+parallel, bitonic, 1048576, 20, 7.7393038010, 1
+parallel, bitonic, 2097152, 21, 17.0324696380, 1
+parallel, bitonic, 4194304, 22, 37.2111502370, 1
+parallel, batcher-odd-even-mergesort, 10, 1024, 0.0086643420, 2
+parallel, batcher-odd-even-mergesort, 15, 32768, 0.4656391280, 2
+parallel, batcher-odd-even-mergesort, 20, 1048576, 21.3428993010, 2
+parallel, batcher-odd-even-mergesort, 21, 2097152, 47.7385158090, 2
+parallel, batcher-odd-even-mergesort, 22, 4194304, 101.2259135860, 2
+parallel, batcher-odd-even, 1024, 10, 0.0012924200, 2
+parallel, batcher-odd-even, 32768, 15, 0.0662166110, 2
+parallel, batcher-odd-even, 1048576, 20, 3.6521080280, 2
+parallel, batcher-odd-even, 2097152, 21, 8.1238712480, 2
+parallel, batcher-odd-even, 4194304, 22, 17.6265381830, 2
+parallel, bitonic, 1024, 10, 0.0013248690, 2
+parallel, bitonic, 32768, 15, 0.0698937670, 2
+parallel, bitonic, 1048576, 20, 3.9011622220, 2
+parallel, bitonic, 2097152, 21, 8.5899161620, 2
+parallel, bitonic, 4194304, 22, 18.7791741690, 2
+parallel, batcher-odd-even-mergesort, 10, 1024, 0.0093680550, 3
+parallel, batcher-odd-even-mergesort, 15, 32768, 0.4607479250, 3
+parallel, batcher-odd-even-mergesort, 20, 1048576, 20.6708352200, 3
+parallel, batcher-odd-even-mergesort, 21, 2097152, 45.7029599860, 3
+parallel, batcher-odd-even-mergesort, 22, 4194304, 99.5788031940, 3
+parallel, batcher-odd-even, 1024, 10, 0.0010393990, 3
+parallel, batcher-odd-even, 32768, 15, 0.0457734010, 3
+parallel, batcher-odd-even, 1048576, 20, 2.4798882900, 3
+parallel, batcher-odd-even, 2097152, 21, 5.5230784070, 3
+parallel, batcher-odd-even, 4194304, 22, 11.9784464660, 3
+parallel, bitonic, 1024, 10, 0.0010992970, 3
+parallel, bitonic, 32768, 15, 0.0488409370, 3
+parallel, bitonic, 1048576, 20, 2.6372175650, 3
+parallel, bitonic, 2097152, 21, 5.8061250240, 3
+parallel, bitonic, 4194304, 22, 12.6298979720, 3
+parallel, batcher-odd-even-mergesort, 10, 1024, 0.0095397580, 4
+parallel, batcher-odd-even-mergesort, 15, 32768, 0.4589782750, 4
+parallel, batcher-odd-even-mergesort, 20, 1048576, 20.9646870610, 4
+parallel, batcher-odd-even-mergesort, 21, 2097152, 45.4117842400, 4
+parallel, batcher-odd-even-mergesort, 22, 4194304, 98.7565602410, 4
+parallel, batcher-odd-even, 1024, 10, 0.0009113770, 4
+parallel, batcher-odd-even, 32768, 15, 0.0349796960, 4
+parallel, batcher-odd-even, 1048576, 20, 1.8809468870, 4
+parallel, batcher-odd-even, 2097152, 21, 4.1947729170, 4
+parallel, batcher-odd-even, 4194304, 22, 9.1135636140, 4
+parallel, bitonic, 1024, 10, 0.0008951790, 4
+parallel, bitonic, 32768, 15, 0.0363669250, 4
+parallel, bitonic, 1048576, 20, 1.9911128410, 4
+parallel, bitonic, 2097152, 21, 4.3968304920, 4
+parallel, bitonic, 4194304, 22, 9.6149933660, 4
+parallel, batcher-odd-even-mergesort, 10, 1024, 0.1456578390, 6
+parallel, batcher-odd-even-mergesort, 15, 32768, 7.8649408940, 6
+parallel, batcher-odd-even-mergesort, 20, 1048576, 347.0094719610, 6
+parallel, batcher-odd-even-mergesort, 21, 2097152, 744.0418618690, 6
+parallel, batcher-odd-even-mergesort, 22, 4194304, 1562.5603819910, 6
+parallel, batcher-odd-even, 1024, 10, 0.0032447450, 6
+parallel, batcher-odd-even, 32768, 15, 0.0519357720, 6
+parallel, batcher-odd-even, 1048576, 20, 2.5349717280, 6
+parallel, batcher-odd-even, 2097152, 21, 5.3085740410, 6
+parallel, batcher-odd-even, 4194304, 22, 9.8809905270, 6
+parallel, bitonic, 1024, 10, 0.0036589260, 6
+parallel, bitonic, 32768, 15, 0.0560028330, 6
+parallel, bitonic, 1048576, 20, 2.6625252440, 6
+parallel, bitonic, 2097152, 21, 5.5699528860, 6
+parallel, bitonic, 4194304, 22, 10.2649938130, 6
+parallel, batcher-odd-even-mergesort, 10, 1024, 0.1906855100, 8
+parallel, batcher-odd-even-mergesort, 15, 32768, 10.1592115140, 8
+parallel, batcher-odd-even-mergesort, 20, 1048576, 442.2562231560, 8
+parallel, batcher-odd-even-mergesort, 21, 2097152, 932.8458811180, 8
+parallel, batcher-odd-even-mergesort, 22, 4194304, 1980.7537318710, 8
+parallel, batcher-odd-even, 1024, 10, 0.0038678720, 8
+parallel, batcher-odd-even, 32768, 15, 0.0465957200, 8
+parallel, batcher-odd-even, 1048576, 20, 2.0961404490, 8
+parallel, batcher-odd-even, 2097152, 21, 4.4925170610, 8
+parallel, batcher-odd-even, 4194304, 22, 9.6184061230, 8
+parallel, bitonic, 1024, 10, 0.0043030460, 8
+parallel, bitonic, 32768, 15, 0.0491630620, 8
+parallel, bitonic, 1048576, 20, 2.1883938540, 8
+parallel, bitonic, 2097152, 21, 4.6617209470, 8
+parallel, bitonic, 4194304, 22, 10.1100217020, 8
